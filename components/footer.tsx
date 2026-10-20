@@ -14,7 +14,7 @@ export default function Footer() {
               className="inline-flex min-h-11 items-center gap-2"
               aria-label="bram, back to top"
             >
-              <span className="text-3xl font-bold tracking-[-0.05em]">
+              <span className="text-3xl font-bold tracking-tight">
                 bram
               </span>
               <span aria-hidden="true" className="h-3 w-3 bg-lime" />
@@ -74,7 +74,7 @@ export default function Footer() {
 
         <div className="mt-10 flex flex-col justify-between gap-4 border-t border-paper/20 pt-4 sm:flex-row sm:items-center">
           <p className="label text-paper/70">
-            © {profile.year} bram. built with Next.js, GSAP, and Tailwind.
+            © {profile.year} bram. 
           </p>
           <a
             href="#top"

@@ -6,6 +6,7 @@ import { gsap, SplitText } from "@/lib/gsap";
 import { profile } from "@/lib/data";
 import LocalClock from "./local-clock";
 import SectionLabel from "./section-label";
+import SectionMark from "./section-mark";
 
 const facts = [
   ["based in", "Banjarmasin, Indonesia"],
@@ -71,8 +72,40 @@ export default function About() {
     { scope: sectionRef },
   );
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const copy = section?.querySelector<HTMLElement>(".about-copy");
+      const mark = section?.querySelector<HTMLElement>(".section-mark");
+      if (!section || !copy) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const media = gsap.matchMedia();
+      media.add("(prefers-reduced-motion: no-preference)", () => {
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        timeline.to(copy, { y: 55, ease: "none" }, 0);
+        if (mark) timeline.to(mark, { y: -110, ease: "none" }, 0);
+      });
+
+      return () => media.revert();
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section id="about" ref={sectionRef} className="border-b border-line">
+    <section id="about" ref={sectionRef} className="relative isolate border-b border-line">
+      <SectionMark
+        index="01"
+        className="top-40 right-0 -z-10 text-[clamp(10rem,26vw,24rem)] text-line/8"
+      />
       <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 lg:py-24">
         <SectionLabel index="01" label="about" />
 
@@ -109,13 +142,13 @@ export default function About() {
             </div>
           </div>
 
-          <div className="col-span-4 lg:col-span-8">
+          <div className="about-copy col-span-4 lg:col-span-8">
             <p
               ref={statementRef}
               className="text-balance text-[clamp(2rem,4.8vw,4.5rem)] font-medium leading-[1.08] tracking-[-0.04em]"
             >
-              I&apos;m bram. I build for the web, study in the 12th grade, and
-              spend a lot of time making Linux cooperate.
+              I&apos;m bram. I build for the web, study in the 12th grade, and spend
+              a lot of time making Linux cooperate.
             </p>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-muted md:text-lg">

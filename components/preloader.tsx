@@ -99,7 +99,7 @@ export default function Preloader({
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="preloader fixed inset-0 z-[100] flex flex-col justify-between bg-paper p-4 md:p-8"
+      className="preloader fixed inset-0 z-100 flex flex-col justify-between bg-paper p-4 md:p-8"
     >
       <div className="label flex justify-between">
         <span>bram / portfolio</span>

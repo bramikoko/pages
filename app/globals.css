@@ -8,8 +8,6 @@
   --lime-ink: #0a0a0a;
   --line: #0a0a0a;
   --backdrop: rgb(10 10 10 / 0.7);
-  --plate: #0a0a0a;
-  --plate-ink: #f2f0e9;
   --header-h: 72px;
   color-scheme: light;
 }
@@ -22,8 +20,6 @@
   --lime-ink: #0a0a0a;
   --line: #f2f0e9;
   --backdrop: rgb(0 0 0 / 0.75);
-  --plate: #151515;
-  --plate-ink: #f2f0e9;
   color-scheme: dark;
 }
 
@@ -35,8 +31,6 @@
   --color-lime-ink: var(--lime-ink);
   --color-line: var(--line);
   --color-backdrop: var(--backdrop);
-  --color-plate: var(--plate);
-  --color-plate-ink: var(--plate-ink);
   --font-sans: var(--font-comfortaa);
   --font-mono: var(--font-space-mono);
 }
@@ -283,5 +277,192 @@ html.cursor-ready .cursor-ring {
   .menu-panel,
   .modal-panel {
     animation: none;
+  }
+}
+
+/* contact rows: the ink fill slides in from the left on hover/focus */
+.contact-social-link {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 250ms ease-out;
+}
+
+.contact-social-link::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 0;
+  background: var(--lime-ink);
+  transition: width 250ms ease-out;
+}
+
+.contact-social-link:hover,
+.contact-social-link:focus-visible {
+  color: var(--lime);
+}
+
+.contact-social-link:hover::before,
+.contact-social-link:focus-visible::before {
+  width: 100%;
+}
+
+/* profile card: daisyUI-style 8-zone 3D hover */
+.hero-3d {
+  display: grid;
+  width: 100%;
+  perspective: 75rem;
+  --transform: 0, 0;
+  --shine: 100% 100%;
+  --hero-3d-ease: linear(
+    0,
+    0.931 13.8%,
+    1.196 21.4%,
+    1.343 29.8%,
+    1.378 36%,
+    1.365 43.2%,
+    1.059 78%,
+    1
+  );
+}
+
+.hero-3d > :first-child {
+  position: relative;
+  overflow: hidden;
+  grid-area: 1 / 1 / 4 / 4;
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transform: rotate3d(var(--transform), 0, 10deg);
+  transition:
+    transform 500ms var(--hero-3d-ease),
+    scale 500ms var(--hero-3d-ease),
+    border-color 300ms ease-out,
+    outline-color 300ms ease-out;
+}
+
+.hero-3d:hover > :first-child {
+  scale: 1.03;
+  outline-color: rgb(198 255 0 / 0.55);
+}
+
+.hero-3d > :first-child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 33.333%;
+  height: 33.333%;
+  pointer-events: none;
+  scale: 500%;
+  opacity: 0;
+  filter: blur(0.75rem);
+  background-image: radial-gradient(
+    circle at 50%,
+    rgb(255 255 255 / 0.14) 10%,
+    transparent 50%
+  );
+  translate: var(--shine);
+  transition:
+    translate 400ms ease-out,
+    opacity 400ms ease-out;
+}
+
+.hero-3d:hover > :first-child::before {
+  opacity: 1;
+}
+
+.hero-3d > :nth-child(n + 2) {
+  isolation: isolate;
+  z-index: 1;
+}
+
+.hero-3d > :nth-child(2) {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.hero-3d > :nth-child(3) {
+  grid-area: 1 / 2 / 2 / 3;
+}
+
+.hero-3d > :nth-child(4) {
+  grid-area: 1 / 3 / 2 / 4;
+}
+
+.hero-3d > :nth-child(5) {
+  grid-area: 2 / 1 / 3 / 2;
+}
+
+.hero-3d > :nth-child(6) {
+  grid-area: 2 / 3 / 3 / 4;
+}
+
+.hero-3d > :nth-child(7) {
+  grid-area: 3 / 1 / 4 / 2;
+}
+
+.hero-3d > :nth-child(8) {
+  grid-area: 3 / 2 / 4 / 3;
+}
+
+.hero-3d > :nth-child(9) {
+  grid-area: 3 / 3 / 4 / 4;
+}
+
+.hero-3d:has(> :nth-child(2):hover) {
+  --transform: -1, 1;
+  --shine: 0% 0%;
+}
+
+.hero-3d:has(> :nth-child(3):hover) {
+  --transform: -1, 0;
+  --shine: 100% 0%;
+}
+
+.hero-3d:has(> :nth-child(4):hover) {
+  --transform: -1, -1;
+  --shine: 200% 0%;
+}
+
+.hero-3d:has(> :nth-child(5):hover) {
+  --transform: 0, 1;
+  --shine: 0% 100%;
+}
+
+.hero-3d:has(> :nth-child(6):hover) {
+  --transform: 0, -1;
+  --shine: 200% 100%;
+}
+
+.hero-3d:has(> :nth-child(7):hover) {
+  --transform: 1, 1;
+  --shine: 0% 200%;
+}
+
+.hero-3d:has(> :nth-child(8):hover) {
+  --transform: 1, 0;
+  --shine: 100% 200%;
+}
+
+.hero-3d:has(> :nth-child(9):hover) {
+  --transform: 1, -1;
+  --shine: 200% 200%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-social-link,
+  .contact-social-link::before {
+    transition: none;
+  }
+
+  .hero-3d > :first-child {
+    transform: none !important;
+    scale: 1 !important;
+    transition: none;
+  }
+
+  .hero-3d > :first-child::before {
+    display: none;
   }
 }

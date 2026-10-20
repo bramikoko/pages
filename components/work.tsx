@@ -10,7 +10,9 @@ import type { RepoFeed } from "@/lib/repos";
 import RepoPreview from "./repo-preview";
 import RepoFeedSummary from "./repo-feed";
 import ReposModal from "./repos-modal";
+import Magnetic from "./magnetic";
 import SectionLabel from "./section-label";
+import SectionMark from "./section-mark";
 
 function padIndex(index: number): string {
   return String(index + 1).padStart(2, "0");
@@ -60,6 +62,39 @@ export default function Work({ feed }: { feed: RepoFeed }) {
             once: true,
           },
         });
+
+        gsap.to(".work-preview-wrap", {
+          y: -55,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        gsap.to(".work-list", {
+          y: -30,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        gsap.to(".section-mark", {
+          y: -140,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
       });
 
       return () => media.revert();
@@ -68,7 +103,11 @@ export default function Work({ feed }: { feed: RepoFeed }) {
   );
 
   return (
-    <section id="work" ref={sectionRef} className="border-b border-line">
+    <section id="work" ref={sectionRef} className="relative isolate border-b border-line">
+      <SectionMark
+        index="02"
+        className="top-40 left-0 -z-10 text-[clamp(9rem,24vw,22rem)] text-line/8"
+      />
       <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 lg:py-24">
         <SectionLabel index="02" label="selected work" />
         <div className="mt-6 flex flex-wrap items-end justify-between gap-4">
@@ -80,26 +119,28 @@ export default function Work({ feed }: { feed: RepoFeed }) {
             </p>
             <RepoFeedSummary feed={feed} />
           </div>
-          <button
-            ref={archiveTriggerRef}
-            type="button"
-            onClick={() => setReposOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={reposOpen}
-            className="label inline-flex min-h-10 items-center gap-2 border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
-          >
-            view all repos ({repos.length})
-            <ArrowUpRight
-              aria-hidden="true"
-              className="h-3.5 w-3.5"
-              strokeWidth={2}
-            />
-          </button>
+          <Magnetic>
+            <button
+              ref={archiveTriggerRef}
+              type="button"
+              onClick={() => setReposOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={reposOpen}
+              className="label inline-flex min-h-11 items-center gap-2 border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
+            >
+              view all repos ({repos.length})
+              <ArrowUpRight
+                aria-hidden="true"
+                className="h-3.5 w-3.5"
+                strokeWidth={2}
+              />
+            </button>
+          </Magnetic>
         </div>
 
         <div className="mt-10 grid grid-cols-4 gap-8 lg:mt-16 lg:grid-cols-12 lg:gap-12">
           <div className="col-span-4 hidden lg:col-span-4 lg:block">
-            <div className="sticky top-[calc(var(--header-h)+2rem)]">
+            <div className="work-preview-wrap sticky top-[calc(var(--header-h)+2rem)]">
               <div
                 ref={previewRef}
                 className="work-preview group border border-line bg-paper transition-colors duration-300 hover:border-lime"
@@ -110,7 +151,7 @@ export default function Work({ feed }: { feed: RepoFeed }) {
                     index={padIndex(active)}
                   />
                 ) : (
-                  <div className="relative flex min-h-[22rem] flex-col justify-between bg-lime p-4 text-lime-ink">
+                  <div className="relative flex min-h-88 flex-col justify-between bg-lime p-4 text-lime-ink">
                     <div className="label flex justify-between">
                       <span>{padIndex(repos.length)} / open slot</span>
                       <span>contact</span>
@@ -149,7 +190,7 @@ export default function Work({ feed }: { feed: RepoFeed }) {
                           href={social.href}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="label inline-flex min-h-10 items-center border border-line px-3 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
+                          className="label inline-flex min-h-11 items-center border border-line px-3 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
                         >
                           {social.label}
                         </a>
@@ -184,7 +225,7 @@ export default function Work({ feed }: { feed: RepoFeed }) {
                   </div>
 
                   <div className="mt-3 flex items-start justify-between gap-6">
-                    <h3 className="display min-w-0 text-[clamp(2.1rem,6vw,6rem)] [overflow-wrap:anywhere]">
+                    <h3 className="display min-w-0 text-[clamp(2.1rem,6vw,6rem)] wrap-anywhere">
                       <a
                         href={repo.url}
                         target="_blank"

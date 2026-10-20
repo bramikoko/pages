@@ -15,6 +15,7 @@ import { stack, type StackGroup, type StackItem } from "@/lib/data";
 import { techIcons } from "@/lib/tech-icons";
 import { techInfo } from "@/lib/tech-info";
 import SectionLabel from "./section-label";
+import SectionMark from "./section-mark";
 
 type DisplayGroup = { label: string; items: StackItem[] };
 
@@ -122,6 +123,28 @@ export default function Stack() {
             once: true,
           },
         });
+
+        gsap.to(".stack-grid", {
+          y: 40,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        gsap.to(".section-mark", {
+          y: -120,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
       });
 
       return () => media.revert();
@@ -207,7 +230,11 @@ export default function Stack() {
   };
 
   return (
-    <section id="stack" ref={sectionRef} className="border-b border-line">
+    <section id="stack" ref={sectionRef} className="relative isolate border-b border-line">
+      <SectionMark
+        index="03"
+        className="top-40 left-0 -z-10 text-[clamp(9rem,22vw,20rem)] text-line/8"
+      />
       <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 lg:py-24">
         <div className="flex items-center gap-4">
           <div className="min-w-0 flex-1">
@@ -227,9 +254,9 @@ export default function Stack() {
           </button>
         </div>
 
-        <div className="mt-8 grid grid-cols-4 gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="stack-grid mt-8 grid grid-cols-4 gap-8 lg:grid-cols-12 lg:gap-12">
           <div className="col-span-4 lg:sticky lg:top-[calc(var(--header-h)+2rem)] lg:col-span-4 lg:self-start">
-            <h2 className="text-balance text-[clamp(2.5rem,6vw,5.5rem)] font-medium leading-[0.95] tracking-[-0.05em]">
+            <h2 className="text-balance text-[clamp(2.5rem,6vw,5.5rem)] font-medium leading-[0.95] tracking-tighter">
               tools I reach for.
             </h2>
             <p className="mt-6 max-w-sm text-base leading-relaxed text-muted md:text-lg">
@@ -349,9 +376,17 @@ export default function Stack() {
                                   expanded ? "tech-popover" : undefined
                                 }
                                 aria-haspopup="dialog"
-                                className={`tech-tile flex w-full items-center gap-2.5 border border-line px-3 py-2.5 text-left text-sm transition-colors duration-200 hover:bg-ink hover:text-paper ${
-                                  expanded ? "bg-ink text-paper" : ""
+                                className={`tech-tile flex w-full items-center gap-2.5 border border-line bg-paper px-3 py-2.5 text-left text-sm transition-colors duration-200 hover:bg-ink hover:text-paper ${
+                                  expanded ? "text-paper" : ""
                                 }`}
+                                style={
+                                  expanded
+                                    ? {
+                                        backgroundColor: "var(--ink)",
+                                        color: "var(--paper)",
+                                      }
+                                    : undefined
+                                }
                               >
                                 {icon ? (
                                   <svg
@@ -397,7 +432,7 @@ export default function Stack() {
               role="dialog"
               aria-label={`${openTech.name} details`}
               tabIndex={-1}
-              className="fixed z-[70] w-72 border border-line bg-paper p-4 text-ink outline-none"
+              className="fixed z-70 w-72 border border-line bg-paper p-4 text-ink outline-none"
               style={{
                 left: openTech.left,
                 top: openTech.top,

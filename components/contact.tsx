@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Check, Copy } from "lucide-react";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/lib/gsap";
 import { profile, socials } from "@/lib/data";
 import SocialIcon from "./social-icon";
+import SectionMark from "./section-mark";
 
 const whatsapp = socials.find((social) => social.icon === "whatsapp");
 
@@ -11,6 +14,7 @@ const externalSocials = socials.filter((social) => social.icon !== "mail");
 
 export default function Contact() {
   const [copied, setCopied] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!copied) return;
@@ -27,8 +31,39 @@ export default function Contact() {
     }
   };
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      const media = gsap.matchMedia();
+      media.add("(prefers-reduced-motion: no-preference)", () => {
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        timeline
+          .to(".contact-grid", { y: 55, ease: "none" }, 0)
+          .to(".section-mark", { y: -40, ease: "none" }, 0);
+      });
+
+      return () => media.revert();
+    },
+    { scope: sectionRef },
+  );
+
   return (
-    <section id="contact" className="bg-lime text-lime-ink">
+    <section id="contact" ref={sectionRef} className="relative isolate overflow-clip bg-lime text-lime-ink">
+      <SectionMark
+        index="04"
+        className="top-40 right-0 -z-10 text-[clamp(10rem,24vw,22rem)] text-lime-ink/[0.08]"
+      />
       <div className="mx-auto max-w-[1600px] px-4 py-16 md:px-8 lg:py-24">
         <div className="label flex items-center gap-3">
           <span>04</span>
@@ -36,9 +71,11 @@ export default function Contact() {
           <span>contact</span>
         </div>
 
-        <div className="mt-8 grid grid-cols-4 gap-8 lg:grid-cols-12 lg:gap-12">
+        <div className="contact-grid mt-8 grid grid-cols-4 gap-8 lg:grid-cols-12 lg:gap-12">
           <div className="col-span-4 lg:col-span-7">
-            <h2 className="display text-[clamp(5rem,18vw,16rem)]">say hi.</h2>
+            <h2 className="display text-[clamp(5rem,18vw,16rem)]">
+              say hi.
+            </h2>
             <p className="label mt-4">email is best.</p>
             <a
               href={`mailto:${profile.email}`}
@@ -116,7 +153,7 @@ export default function Contact() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={`${social.label}, ${social.handle}, opens in a new tab`}
-                  className="group flex min-h-14 items-center justify-between gap-4 border-t border-lime-ink px-4 py-3 transition-colors hover:bg-lime-ink hover:text-lime"
+                  className="contact-social-link group flex min-h-14 items-center justify-between gap-4 border-t border-lime-ink px-4 py-3"
                 >
                   <span className="flex items-center gap-3">
                     <SocialIcon icon={social.icon} className="h-4 w-4" />
