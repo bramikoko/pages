@@ -14,52 +14,6 @@ export const profile = {
   offScreen: ["anime", "manga"],
 };
 
-export type Project = {
-  index: string;
-  name: string;
-  kind: string;
-  year: string;
-  description: string;
-  tags: string[];
-  href: string;
-  note?: string;
-  secondary?: { label: string; href: string };
-  visual?: "open";
-};
-
-export const projects: Project[] = [
-  {
-    index: "01",
-    name: "libfprint-ft9201",
-    kind: "linux tooling / fork",
-    year: "2026",
-    description:
-      "Installs the FocalTech FT9201 and FT9338 fingerprint reader on Fedora-based Linux systems, including Bazzite and rpm-ostree.",
-    tags: ["shell", "linux", "fedora", "libfprint"],
-    href: "https://github.com/bramikoko/libfprint-ft9201",
-    note: "Forked from ArcheoCodix/libfprint-ft9201.",
-    secondary: {
-      label: "upstream",
-      href: "https://github.com/ArcheoCodix/libfprint-ft9201",
-    },
-  },
-  {
-    index: "02",
-    name: "bramikoko",
-    kind: "profile / readme",
-    year: "2026",
-    description:
-      "A terminal-flavored profile README for my stack, socials, and current status, mirrored on GitHub and Codeberg.",
-    tags: ["markdown", "github", "codeberg"],
-    href: "https://github.com/bramikoko/bramikoko",
-    note: "The Codeberg mirror lives in the .profile repository.",
-    secondary: {
-      label: "codeberg mirror",
-      href: "https://codeberg.org/bramikoko/.profile",
-    },
-  },
-];
-
 export type StackItem = {
   name: string;
   icon: string;

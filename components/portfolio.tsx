@@ -7,6 +7,7 @@ import {
   subscribeTheme,
   writeTheme,
 } from "@/lib/theme-store";
+import type { RepoFeed } from "@/lib/repos";
 import About from "./about";
 import Contact from "./contact";
 import CustomCursor from "./custom-cursor";
@@ -19,7 +20,7 @@ import ScrollProgress from "./scroll-progress";
 import Stack from "./stack";
 import Work from "./work";
 
-export default function Portfolio() {
+export default function Portfolio({ feed }: { feed: RepoFeed }) {
   const [ready, setReady] = useState(false);
   const theme = useSyncExternalStore(
     subscribeTheme,
@@ -46,7 +47,7 @@ export default function Portfolio() {
         <Hero ready={ready} />
         <Marquee />
         <About />
-        <Work />
+        <Work feed={feed} />
         <Stack />
         <Contact />
       </main>

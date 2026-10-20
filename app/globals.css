@@ -7,6 +7,9 @@
   --lime: #c6ff00;
   --lime-ink: #0a0a0a;
   --line: #0a0a0a;
+  --backdrop: rgb(10 10 10 / 0.7);
+  --plate: #0a0a0a;
+  --plate-ink: #f2f0e9;
   --header-h: 72px;
   color-scheme: light;
 }
@@ -18,6 +21,9 @@
   --lime: #c6ff00;
   --lime-ink: #0a0a0a;
   --line: #f2f0e9;
+  --backdrop: rgb(0 0 0 / 0.75);
+  --plate: #151515;
+  --plate-ink: #f2f0e9;
   color-scheme: dark;
 }
 
@@ -28,6 +34,9 @@
   --color-lime: var(--lime);
   --color-lime-ink: var(--lime-ink);
   --color-line: var(--line);
+  --color-backdrop: var(--backdrop);
+  --color-plate: var(--plate);
+  --color-plate-ink: var(--plate-ink);
   --font-sans: var(--font-comfortaa);
   --font-mono: var(--font-space-mono);
 }
@@ -274,27 +283,5 @@ html.cursor-ready .cursor-ring {
   .menu-panel,
   .modal-panel {
     animation: none;
-  }
-}
-
-.preview-cursor {
-  animation: preview-blink 1.1s steps(1) infinite;
-}
-
-@keyframes preview-blink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .preview-cursor {
-    animation: none !important;
-    opacity: 1;
   }
 }
