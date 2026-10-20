@@ -235,7 +235,7 @@ export default function Stack() {
             <p className="mt-6 max-w-sm text-base leading-relaxed text-muted md:text-lg">
               Everything below comes from my profile README. The lime dot marks
               what I am learning now. Groups collapse, and the tiles are dealt
-              fresh every visit — select one for a quick note.
+              fresh every visit: select one for a quick note.
             </p>
 
             <dl className="mt-8 grid grid-cols-3 border border-line bg-paper">

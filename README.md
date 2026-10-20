@@ -8,7 +8,7 @@ The site is a single page built as a brutalist editorial specimen: paper and ink
 
 - Next.js 16 with the App Router and Turbopack
 - React 19 and TypeScript
-- Tailwind CSS 4 through `@tailwindcss/turbopack`
+- Tailwind CSS 4 through `@tailwindcss/postcss`
 - GSAP 3 with ScrollTrigger, SplitText, and `useGSAP`
 - Lucide for interface icons and simple-icons for brand marks
 - Bun for installs and scripts
@@ -28,16 +28,25 @@ bun run start
 ```
 app/          routes, layout, metadata, global styles, icon
 components/   page sections and interaction primitives
-lib/          profile content, GSAP setup, icon map, theme store
+lib/          profile content, live repo feed, GSAP setup, icon map, theme store
 public/       avatar
 DESIGN.md     identity, palette, typography, motion, and accessibility notes
 ```
 
 ## Content
 
-Everything on the page comes from the public profiles at github.com/bramikoko and codeberg.org/bramikoko, checked 2026-10-19. The work section lists real repositories: the `libfprint-ft9201` fork and the profile README. The open slot is a contact prompt, not a claim.
+Profile copy, the stack, and the social links live in `lib/data.ts` and come from the public profiles at github.com/bramikoko and codeberg.org/bramikoko.
 
-There are no fabricated projects, statistics, testimonials, or client claims.
+The work section is not hand-maintained. `lib/repos.ts` reads the public GitHub REST API and the Codeberg (Forgejo) API on the server, then the page does the following:
+
+- lists every public repository, newest push first, with language, dates, stars, forks, topics, and the latest commit
+- merges recent public GitHub events (pushes, pull requests, issues, releases) into the activity list in the all-repos modal
+- keeps the result for one hour through `'use cache'` and `cacheLife("hours")`, so the page stays static and the APIs are not hit per visitor
+- shows a per-host error line instead of failing the page when one API is down or rate limited
+
+A `GITHUB_TOKEN` environment variable is optional. It raises the unauthenticated limit of 60 requests per hour and is read on the server only; it is never sent to the browser.
+
+The open slot is a contact prompt, not a claim. There are no fabricated projects, statistics, testimonials, or client claims.
 
 ## Design and accessibility
 
