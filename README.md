@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# bram / portfolio
 
-## Getting Started
+Personal portfolio for bram, a web developer in Banjarmasin, Indonesia.
 
-First, run the development server:
+The site is a single page built as a brutalist editorial specimen: paper and ink, one lime accent, Comfortaa for display and Space Mono for metadata. Motion is handled with GSAP.
+
+## Stack
+
+- Next.js 16 with the App Router and Turbopack
+- React 19 and TypeScript
+- Tailwind CSS 4 through `@tailwindcss/turbopack`
+- GSAP 3 with ScrollTrigger, SplitText, and `useGSAP`
+- Lucide for interface icons and simple-icons for brand marks
+- Bun for installs and scripts
+
+## Scripts
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
 bun dev
+bun run lint
+bun run build
+bun run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/          routes, layout, metadata, global styles, icon
+components/   page sections and interaction primitives
+lib/          profile content, GSAP setup, icon map, theme store
+public/       avatar
+DESIGN.md     identity, palette, typography, motion, and accessibility notes
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Content
 
-## Learn More
+Everything on the page comes from the public profiles at github.com/bramikoko and codeberg.org/bramikoko, checked 2026-10-19. The work section lists real repositories: the `libfprint-ft9201` fork and the profile README. The open slot is a contact prompt, not a claim.
 
-To learn more about Next.js, take a look at the following resources:
+There are no fabricated projects, statistics, testimonials, or client claims.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Design and accessibility
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `DESIGN.md` holds the direction and the reason for each major choice.
+- Light paper is the default theme. A dark mode ships with persistence.
+- Text meets WCAG AA contrast. Focus states are visible, the mobile menu closes with Escape, and motion respects `prefers-reduced-motion`.
+- The marquee is decorative and hidden from assistive technology. The same stack is available as a list in the stack section.
