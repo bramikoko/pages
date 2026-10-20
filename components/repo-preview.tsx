@@ -11,43 +11,45 @@ export default function RepoPreview({
 }) {
   return (
     <div className="bg-paper">
-      <div className="relative flex h-[clamp(16rem,36svh,24rem)] flex-col justify-between overflow-hidden border-b border-line bg-plate p-4 text-plate-ink">
-        <div className="label flex items-baseline justify-between gap-3">
-          <span className="truncate text-lime">{repo.fullName}</span>
-          <span>{formatDate(repo.createdAt).slice(-4)}</span>
+      <div className="border-b border-line">
+        <div className="flex items-center justify-between gap-3 bg-lime px-4 py-2 text-lime-ink">
+          <span className="label truncate">{repo.fullName}</span>
+          <span className="label">{formatDate(repo.createdAt).slice(-4)}</span>
         </div>
 
-        <dl className="mono grid gap-y-1.5 border-l-2 border-lime pl-3 text-[clamp(0.6rem,1.1vw,0.8rem)] leading-relaxed">
+        <dl className="mono grid gap-y-2 px-4 py-4 text-[clamp(0.62rem,1.1vw,0.8rem)] leading-relaxed">
           <div className="flex gap-3">
-            <dt className="w-[5.5rem] shrink-0 text-plate-ink/70">language</dt>
-            <dd className="min-w-0 break-words">{repo.language ?? "none"}</dd>
+            <dt className="w-22 shrink-0 text-muted">language</dt>
+            <dd className="min-w-0 wrap-break-word">{repo.language ?? "none"}</dd>
           </div>
           <div className="flex gap-3">
-            <dt className="w-[5.5rem] shrink-0 text-plate-ink/70">pushed</dt>
+            <dt className="w-22 shrink-0 text-muted">pushed</dt>
             <dd className="min-w-0">{formatDate(repo.pushedAt)}</dd>
           </div>
           <div className="flex gap-3">
-            <dt className="w-[5.5rem] shrink-0 text-plate-ink/70">created</dt>
+            <dt className="w-22 shrink-0 text-muted">created</dt>
             <dd className="min-w-0">{formatDate(repo.createdAt)}</dd>
           </div>
           {repo.latestCommit ? (
             <div className="flex gap-3">
-              <dt className="w-[5.5rem] shrink-0 text-plate-ink/70">commit</dt>
-              <dd className="min-w-0 break-words">
-                <span className="text-lime">{repo.latestCommit.short}</span>{" "}
+              <dt className="w-22 shrink-0 text-muted">commit</dt>
+              <dd className="min-w-0 wrap-break-word">
+                <span className="bg-lime px-1 text-lime-ink">
+                  {repo.latestCommit.short}
+                </span>{" "}
                 {repo.latestCommit.message}
               </dd>
             </div>
           ) : null}
         </dl>
+      </div>
 
-        <div className="label flex items-center justify-between gap-3">
-          <span>{repo.host}</span>
-          <span className="flex items-center gap-2">
-            {repo.isFork ? "fork" : repo.archived ? "archived" : "repo"}
-            <span aria-hidden="true" className="h-2 w-2 bg-lime" />
-          </span>
-        </div>
+      <div className="label flex items-center justify-between gap-3 border-b border-line px-4 py-2">
+        <span>{repo.host}</span>
+        <span className="flex items-center gap-2">
+          {repo.isFork ? "fork" : repo.archived ? "archived" : "repo"}
+          <span aria-hidden="true" className="h-2 w-2 bg-lime" />
+        </span>
       </div>
 
       <div className="p-4">
@@ -58,10 +60,9 @@ export default function RepoPreview({
             </span>
             <span>/ {repo.host}</span>
           </span>
-          <span>{repo.isFork ? "fork" : "source"}</span>
         </div>
 
-        <h3 className="display mt-3 text-[clamp(1.6rem,2.4vw,2rem)] [overflow-wrap:anywhere]">
+        <h3 className="display mt-3 text-[clamp(1.6rem,2.4vw,2rem)] wrap-anywhere">
           <a
             href={repo.url}
             target="_blank"
@@ -91,7 +92,7 @@ export default function RepoPreview({
           target="_blank"
           rel="noreferrer noopener"
           data-cursor="view"
-          className="label mt-4 inline-flex min-h-10 items-center gap-2 border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
+          className="label mt-4 inline-flex min-h-11 items-center gap-2 border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
         >
           open repository
           <ArrowUpRight

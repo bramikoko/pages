@@ -109,14 +109,14 @@ export default function ReposModal({
         type="button"
         aria-label="Close all repositories"
         onClick={onClose}
-        className="fixed inset-0 z-[85] cursor-default bg-backdrop"
+        className="fixed inset-0 z-85 cursor-default bg-backdrop"
       />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-label="All repositories"
-        className="modal-panel fixed z-[95] w-[min(920px,calc(100vw-2rem))] border border-line bg-paper"
+        className="modal-panel fixed z-95 w-[min(920px,calc(100vw-2rem))] border border-line bg-paper"
       >
         <div
           onPointerDown={startDrag}
@@ -133,7 +133,7 @@ export default function ReposModal({
             type="button"
             onClick={onClose}
             aria-label="Close all repositories"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center border border-line transition-colors hover:bg-ink hover:text-paper"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center border border-line transition-colors hover:bg-ink hover:text-paper"
           >
             <X aria-hidden="true" className="h-3.5 w-3.5" strokeWidth={2} />
           </button>
@@ -168,7 +168,7 @@ export default function ReposModal({
                       </span>
                     </div>
 
-                    <h3 className="display mt-2 text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] [overflow-wrap:anywhere]">
+                    <h3 className="display mt-2 text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] wrap-anywhere">
                       <a
                         href={repo.url}
                         target="_blank"
@@ -224,7 +224,7 @@ export default function ReposModal({
                     target="_blank"
                     rel="noreferrer noopener"
                     data-cursor="view"
-                    className="label inline-flex min-h-10 shrink-0 items-center gap-2 self-start border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
+                    className="label inline-flex min-h-11 shrink-0 items-center gap-2 self-start border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
                   >
                     open repository
                     <ArrowUpRight
