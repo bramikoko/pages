@@ -33,6 +33,12 @@ public/       avatar
 DESIGN.md     identity, palette, typography, motion, and accessibility notes
 ```
 
+## Likes storage
+
+The like counter keeps its count in Upstash Redis over the REST API when `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` are set. That is the path for Vercel, whose function filesystem is read-only. Locally, with no env vars, the route falls back to `.data/likes.json` (gitignored), so development needs no account.
+
+To deploy on Vercel: add the Upstash Redis integration from the Marketplace, connect it to the project, and redeploy. The legacy Vercel KV names `KV_REST_API_URL` and `KV_REST_API_TOKEN` are also accepted.
+
 ## Content
 
 Profile copy, the stack, and the social links live in `lib/data.ts` and come from the public profiles at github.com/bramikoko and codeberg.org/bramikoko.

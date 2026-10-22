@@ -21,7 +21,7 @@ Repository data is not written by hand. The work section reads the public GitHub
 - Instagram: instagram.com/bramikoko
 - Reddit: reddit.com/user/bramikoko
 - Avatar: the public GitHub avatar
-- Likes: a real server-side counter served by a `/api/likes` route handler and persisted to `.data/likes.json`. The tile is the only inverted block in the hero strip, so the contrast and the oversized count make the one clickable moment above the fold; the star is the accent that names the action and seeds the burst. The tile toggles like/unlike per browser via local storage, and falls back to `n/a` with a "click to retry" hint if the server is unreachable; the tile never disables.
+- Likes: a real server-side counter served by a `/api/likes` route handler and persisted to Upstash Redis when its REST env vars exist, or to `.data/likes.json` for local development. Why Redis: the Vercel function filesystem is read-only, so a file counter only worked on a self-hosted server. The tile is the only inverted block in the hero strip, so the contrast and the oversized count make the one clickable moment above the fold; the star is the accent that names the action and seeds the burst. The tile toggles like/unlike per browser via local storage, and falls back to `n/a` with a "click to retry" hint if the server is unreachable; the tile never disables.
 
 No invented projects, statistics, testimonials, clients, or availability claims.
 
