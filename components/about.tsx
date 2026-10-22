@@ -11,9 +11,9 @@ import SectionMark from "./section-mark";
 const facts = [
   ["based in", "Banjarmasin, Indonesia"],
   ["working with", "red.dev"],
-  ["studying", "12th grade"],
+  ["life update", "preparing for competition"],
   ["pronouns", profile.pronouns],
-  ["off screen", "anime, manga"],
+  ["off screen", "anime, manga, sleep"],
 ];
 
 export default function About() {
@@ -147,14 +147,11 @@ export default function About() {
               ref={statementRef}
               className="text-balance text-[clamp(2rem,4.8vw,4.5rem)] font-medium leading-[1.08] tracking-[-0.04em]"
             >
-              I&apos;m bram. I build for the web, study in the 12th grade, and spend
-              a lot of time making Linux cooperate.
+              I&apos;m bram. fullstack web developer, weebs, and almost graduate, using linux and use ai so much.
             </p>
 
             <p className="mt-8 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
-              Right now I work with red.dev and learn Nuxt.js, Next.js, and
-              Laravel. I care about fast pages, clear interfaces, and tools that
-              stay out of the way.
+              Currently work with red.dev, preparing for LKS right now.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-2">
