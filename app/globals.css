@@ -47,7 +47,7 @@
 
   body {
     background: var(--paper);
-    color: var(--ink);
+    color: var(--lime-ink);
     font-family: var(--font-comfortaa), sans-serif;
     overflow-x: clip;
   }
@@ -151,6 +151,31 @@
 
 .modal-panel {
   animation: modal-in 240ms ease both;
+}
+
+.modal-card {
+  animation: modal-card-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes modal-card-in {
+  from {
+    opacity: 0;
+    transform: translateX(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.track-scroll {
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.track-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes modal-in {
@@ -275,7 +300,8 @@ html.cursor-ready .cursor-ring {
   }
 
   .menu-panel,
-  .modal-panel {
+  .modal-panel,
+  .modal-card {
     animation: none;
   }
 }
@@ -464,5 +490,73 @@ html.cursor-ready .cursor-ring {
 
   .hero-3d > :first-child::before {
     display: none;
+  }
+}
+
+.like-star {
+  position: absolute;
+  z-index: 10;
+  width: 14px;
+  height: 14px;
+  color: var(--lime-ink);
+  pointer-events: none;
+}
+
+.status-like {
+  font-family: inherit;
+  text-align: left;
+}
+
+.status-like:focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: -5px;
+}
+
+.status-like[data-liked="true"]:focus-visible {
+  outline-color: var(--ink);
+}
+
+.status-star,
+.status-hint {
+  color: var(--lime);
+  transition: color 160ms linear;
+}
+
+.status-star {
+  animation: like-star-nudge 5s ease-in-out infinite;
+}
+
+[data-theme="dark"] .status-like:not([data-liked="true"]) .status-star,
+[data-theme="dark"] .status-like:not([data-liked="true"]) .status-hint {
+  color: var(--paper);
+}
+
+.status-like[data-liked="true"] .status-star,
+.status-like[data-liked="true"] .status-hint {
+  color: var(--lime-ink);
+}
+
+.status-like:hover:not(:disabled) .status-star {
+  scale: 1.18;
+}
+
+@keyframes like-star-nudge {
+  0%,
+  84%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  88% {
+    transform: rotate(-9deg) scale(1.1);
+  }
+  93% {
+    transform: rotate(7deg) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-star {
+    animation: none;
+    transition: none;
   }
 }

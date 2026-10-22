@@ -21,6 +21,7 @@ Repository data is not written by hand. The work section reads the public GitHub
 - Instagram: instagram.com/bramikoko
 - Reddit: reddit.com/user/bramikoko
 - Avatar: the public GitHub avatar
+- Likes: a real server-side counter served by a `/api/likes` route handler and persisted to `.data/likes.json`. The tile is the only inverted block in the hero strip, so the contrast and the oversized count make the one clickable moment above the fold; the star is the accent that names the action and seeds the burst. The tile toggles like/unlike per browser via local storage, and falls back to `n/a` with a "click to retry" hint if the server is unreachable; the tile never disables.
 
 No invented projects, statistics, testimonials, clients, or availability claims.
 
@@ -34,7 +35,8 @@ No invented projects, statistics, testimonials, clients, or availability claims.
 - Absolute WITA timestamps, no relative labels. Why: cached output stays correct for the whole cache window.
 - Repo previews carry real fields (language, dates, stars, forks, commit), not a fake terminal. Why: the old preview imitated a terminal, which said nothing about the actual repository.
 - The preview follows the theme instead of forcing a dark plate. Why: a black card on paper read as a separate artifact, and light mode should stay paper.
-- The archive is one scrollable list, not a grid. Why: the repository count comes from the API and changes, and a two-column grid leaves a hole whenever the count is odd.
+- The archive is a horizontal track of specimen cards, not a vertical list or a grid. Why: the modal stays short, each repository gets one full card, and sideways motion reads as browsing rather than reading; arrows, wheel, snap, and the progress line make the direction obvious. A vertical list would have to scroll inside the panel and hide how many repos remain. The activity panel is a numbered ledger (date, host, message, repo) instead of a wrapped inline row: the old row broke the message into a narrow column and left the repo link floating.
+- The preview is one paper plate with hairline rows: header, name, description, a three-cell fact strip, a twelve-month activity window drawn from the created and pushed dates, latest commit, one action. Why: the old stacked boxes repeated the same facts in three competing frames; the single plate keeps the repository name and the open action as the only two focal points, and the window turns the two dates into a position instead of another label.
 
 ## Design Read
 
@@ -72,7 +74,8 @@ Why: paper and ink give the typography room. One lime accent marks action and se
 ## Composition
 
 - 12-column desktop grid, 4-column mobile grid, hard 1px rules, no radius.
-- Sections vary: full-bleed hero, ticker, asymmetric about block, sticky work preview with a theme-aware repo plate, collapsible stack index, oversized lime contact block, and a draggable, scrollable all-repos list.
+- Favicon: uppercase BA set from Comfortaa outlines on ink. Why: the letterforms are the identity, and outlines keep the mark identical when a browser cannot load the webfont.
+- Sections vary: full-bleed hero, ticker, asymmetric about block, sticky work preview with a theme-aware repo plate, collapsible stack index, oversized lime contact block, and a draggable all-repos modal built as a horizontal track.
 - Identity motif: editorial specimen marks, index numbers, city coordinates, crop marks, and a live Banjarmasin clock.
 - One focal point per screen. Whitespace separates, never fills.
 
@@ -90,9 +93,10 @@ Why: paper and ink give the typography room. One lime accent marks action and se
 - Hero particles: a sparse canvas field of 1 to 3px squares, mostly ink with a few lime, drifting with the pointer pushing them away. Why: it gives the specimen sheet materiality and a second depth layer, using squares from the grid instead of glowing orbs or a network of lines. Density is one square per 26k px², capped at 64.
 - Profile card: the id card is a link to GitHub with an 8-zone 3D hover. The card tilts toward the hovered zone, scales to 1.03, picks up a lime outline and a small specular highlight. Hover or keyboard focus turns the border lime, lifts the grayscale, and slides in a `view github` bar; touch layouts keep the bar visible. Why: the tilt is an effect, not an affordance, so the label and destination make the click explicit.
 - Contact rows: the ink fill wipes in from the left over 250ms on hover or focus, flipping the row to lime text. Why: the wipe makes the row feel like one surface and gives the hover a direction, while the copy stays readable at every point.
-- Parallax: the hero card moves 65px and the title 45px; the about copy moves 55px; the work preview 55px and the list 30px; the stack grid 40px; the contact grid 55px. Each section also carries its oversized index behind the content at 8% and moves it against the section (about 110px, work 140px, stack 120px, contact 40px). Why: every section has two visible depths, the reading content lags or leads the section, and the index watermarks make that layer order legible without moving any reading text.
+- Hero scene: three ridge depths behind the hero, moving at 34px per depth step on scroll and drifting 22px against the pointer. Why: firewatch-style depth comes from layers that separate, not from a single moving background; the ridge tones stay under 14% ink so the name and the card keep their contrast. Static under reduced motion.
+- Parallax: the hero card moves 65px and the title 45px; the about copy moves 55px; the work list 30px, while the sticky preview keeps its position so it never rides under the fixed header; the stack grid 40px; the contact grid 55px. Each section also carries its oversized index behind the content at 8% and moves it against the section (about 110px, work 140px, stack 120px, contact 40px). Why: every section has two visible depths, the reading content lags or leads the section, and the index watermarks make that layer order legible without moving any reading text.
 - Stack: collapsible numbered groups of icon tiles with a tools, groups, and learning strip; tile order is dealt fresh each visit with a reshuffle control, and each tile opens a keyboard-accessible detail popover with a one-line note and the official site.
-- Scroll: section reveals, word reveal in the manifesto, a marquee that reacts to scroll velocity, repo preview crossfades, a rotating open-slot plus, a stack tile reshuffle, and a draggable, scrollable all-repos list. The all-repos trigger is magnetic on fine pointers.
+- Scroll: section reveals, word reveal in the manifesto, a marquee that reacts to scroll velocity, repo preview crossfades, horizontal archive cards that stagger in and carry a shifting index numeral, a rotating open-slot plus, a stack tile reshuffle, and a draggable all-repos modal built as a horizontal track. The all-repos trigger is magnetic on fine pointers.
 - Purpose: direct attention, show hierarchy, reward exploration. No motion that hides content or blocks input.
 - Reduced motion: all content visible, no preloader delay, no cursor follower, no marquee translation, no particle canvas, no parallax, no magnetic offset, no scroll-jacking. Controls still work.
 

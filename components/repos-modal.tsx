@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
-import { ArrowUpRight, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, X } from "lucide-react";
 import { formatDate } from "@/lib/format";
 import type { RepoFeed } from "@/lib/repos";
 import { RepoActivity } from "./repo-feed";
@@ -17,9 +23,29 @@ export default function ReposModal({
   onClose: () => void;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ dx: number; dy: number; w: number; h: number } | null>(
     null,
   );
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const updateTrack = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    const max = track.scrollWidth - track.clientWidth;
+    setCanPrev(track.scrollLeft > 4);
+    setCanNext(track.scrollLeft < max - 4);
+    setProgress(max > 0 ? track.scrollLeft / max : 0);
+
+    const center = track.getBoundingClientRect().left + track.clientWidth / 2;
+    for (const panel of Array.from(track.querySelectorAll<HTMLElement>("[data-panel]"))) {
+      const rect = panel.getBoundingClientRect();
+      const offset = (rect.left + rect.width / 2 - center) / track.clientWidth;
+      panel.style.setProperty("--shift", `${(-offset * 26).toFixed(1)}px`);
+    }
+  }, []);
 
   useLayoutEffect(() => {
     if (!panelRef.current) return;
@@ -67,6 +93,45 @@ export default function ReposModal({
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [onClose]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    let frame = 0;
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateTrack();
+      });
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      event.preventDefault();
+      track.scrollLeft += event.deltaY;
+    };
+
+    updateTrack();
+    track.addEventListener("scroll", onScroll, { passive: true });
+    track.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("resize", updateTrack);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      track.removeEventListener("scroll", onScroll);
+      track.removeEventListener("wheel", onWheel);
+      window.removeEventListener("resize", updateTrack);
+    };
+  }, [updateTrack]);
+
+  const step = (direction: 1 | -1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const first = track.querySelector<HTMLElement>("[data-panel]");
+    const amount = first ? first.getBoundingClientRect().width + 1 : track.clientWidth * 0.8;
+    track.scrollBy({ left: amount * direction, behavior: "smooth" });
+  };
 
   const startDrag = (event: React.PointerEvent<HTMLDivElement>) => {
     const panel = panelRef.current;
@@ -139,129 +204,182 @@ export default function ReposModal({
           </button>
         </div>
 
-        <div className="max-h-[min(74svh,760px)] overflow-y-auto">
-          {feed.repos.length > 0 ? (
-            feed.repos.map((repo, index) => (
-              <article
-                key={`${repo.host}:${repo.fullName}`}
-                className="border-b border-line px-5 py-5"
-              >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
-                  <div className="min-w-0">
-                    <div className="label flex flex-wrap items-center gap-x-3 gap-y-1 text-muted">
-                      <span className="inline-flex h-5 min-w-5 items-center justify-center bg-lime px-1 text-[0.6rem] text-lime-ink">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span>{repo.host}</span>
-                      <span>
-                        {repo.isFork
-                          ? "fork"
-                          : repo.archived
-                            ? "archived"
-                            : "repo"}
-                      </span>
-                      <span className="text-ink sm:ml-auto">
-                        pushed{" "}
-                        <time dateTime={repo.pushedAt}>
-                          {formatDate(repo.pushedAt)}
-                        </time>
-                      </span>
-                    </div>
+        <div
+          ref={trackRef}
+          tabIndex={0}
+          role="group"
+          aria-label="Repositories, scroll horizontally"
+          className="track-scroll flex h-[min(58svh,560px)] snap-x snap-mandatory overflow-x-auto overflow-y-hidden focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink"
+        >
+          {feed.repos.map((repo, index) => (
+            <article
+              key={`${repo.host}:${repo.fullName}`}
+              data-panel
+              style={{ ["--i" as string]: index }}
+              className="modal-card group flex w-[min(26rem,calc(100vw-5rem))] shrink-0 snap-start flex-col border-r border-line bg-paper"
+            >
+              <div className="flex flex-1 flex-col overflow-y-auto p-5">
+                <div className="label flex items-center justify-between gap-3 text-muted">
+                  <span className="flex items-center gap-2">
+                    <span className="inline-flex h-5 min-w-5 items-center justify-center bg-lime px-1 text-[0.6rem] text-lime-ink">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span>{repo.host}</span>
+                    <span>
+                      {repo.isFork ? "fork" : repo.archived ? "archived" : "repo"}
+                    </span>
+                  </span>
+                  <span>pushed {formatDate(repo.pushedAt)}</span>
+                </div>
 
-                    <h3 className="display mt-2 text-[clamp(1.8rem,3.4vw,2.8rem)] leading-[1.05] wrap-anywhere">
-                      <a
-                        href={repo.url}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        data-cursor="view"
-                        className="transition-colors hover:text-muted"
-                      >
-                        {repo.name}
-                      </a>
-                    </h3>
-
-                    <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted">
-                      {repo.description ?? "no description on the repo."}
-                    </p>
-
-                    <p className="label mt-2 text-muted">
-                      language {repo.language ?? "none"} / created{" "}
-                      <time dateTime={repo.createdAt}>
-                        {formatDate(repo.createdAt)}
-                      </time>
-                      {repo.stars > 0 ? ` / stars ${repo.stars}` : ""}
-                      {repo.forks > 0 ? ` / forks ${repo.forks}` : ""}
-                    </p>
-
-                    {repo.latestCommit ? (
-                      <p className="label mt-1 max-w-xl text-muted">
-                        latest /{" "}
-                        <span className="mono">
-                          {repo.latestCommit.short}
-                        </span>{" "}
-                        <span className="normal-case">
-                          {repo.latestCommit.message}
-                        </span>
-                      </p>
-                    ) : null}
-
-                    {repo.topics.length > 0 ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {repo.topics.map((topic) => (
-                          <span
-                            key={topic}
-                            className="label border border-line px-2 py-1"
-                          >
-                            {topic}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-                  </div>
-
+                <h3 className="display mt-4 text-[clamp(1.9rem,4vw,2.6rem)] leading-none wrap-anywhere">
                   <a
                     href={repo.url}
                     target="_blank"
                     rel="noreferrer noopener"
                     data-cursor="view"
-                    className="label inline-flex min-h-11 shrink-0 items-center gap-2 self-start border border-line px-4 py-2 transition-colors hover:bg-lime hover:text-lime-ink"
+                    className="transition-colors hover:text-muted"
                   >
-                    open repository
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="h-3.5 w-3.5"
-                      strokeWidth={2}
-                    />
+                    {repo.name}
                   </a>
-                </div>
-              </article>
-            ))
-          ) : (
-            <p className="border-b border-line px-5 py-5 text-sm leading-relaxed text-muted">
-              No public repositories came back from github or codeberg. The
-              profiles are still linked in the work section.
-            </p>
-          )}
+                </h3>
 
-          <div className="px-5 py-4">
-            <p className="label text-muted">
-              recent activity / {feed.activity.length}
-            </p>
-            <RepoActivity feed={feed} className="mt-3" />
-          </div>
+                <p className="mt-3 text-sm leading-relaxed text-muted">
+                  {repo.description ?? "no description on the repo."}
+                </p>
 
-          <a
-            href="#contact"
-            onClick={onClose}
-            className="label flex items-center justify-between gap-4 border-t border-line px-5 py-4 text-muted transition-colors hover:bg-lime hover:text-lime-ink"
+                <dl className="mt-5 border-t border-line">
+                  <div className="flex justify-between gap-4 border-b border-line py-2">
+                    <dt className="label text-muted">language</dt>
+                    <dd className="mono text-[0.72rem]">{repo.language ?? "none"}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4 border-b border-line py-2">
+                    <dt className="label text-muted">created</dt>
+                    <dd className="mono text-[0.72rem]">{formatDate(repo.createdAt)}</dd>
+                  </div>
+                  <div className="flex justify-between gap-4 border-b border-line py-2">
+                    <dt className="label text-muted">commit</dt>
+                    <dd className="mono text-[0.72rem]">
+                      {repo.latestCommit ? repo.latestCommit.short : "none"}
+                    </dd>
+                  </div>
+                </dl>
+
+                {repo.latestCommit ? (
+                  <p className="mt-3 line-clamp-3 text-[0.78rem] leading-relaxed text-muted">
+                    {repo.latestCommit.message}
+                  </p>
+                ) : null}
+
+                {repo.topics.length > 0 ? (
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {repo.topics.map((topic) => (
+                      <span key={topic} className="label border border-line px-2 py-1">
+                        {topic}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+
+                <span
+                  aria-hidden="true"
+                  className="display pointer-events-none mt-auto select-none pt-6 text-right text-[5.5rem] leading-none text-line/25"
+                  style={{ translate: "var(--shift, 0) 0" }}
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
+
+              <a
+                href={repo.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                data-cursor="view"
+                className="label flex min-h-11 items-center justify-between gap-3 border-t border-line px-5 transition-colors hover:bg-lime hover:text-lime-ink"
+              >
+                open repository
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+              </a>
+            </article>
+          ))}
+
+          <article
+            data-panel
+            style={{ ["--i" as string]: feed.repos.length }}
+            className="modal-card flex w-[min(30rem,calc(100vw-5rem))] shrink-0 snap-start flex-col border-r border-line bg-paper"
           >
-            {openIndex} / open slot, have a project in mind?
-            <ArrowUpRight
-              aria-hidden="true"
-              className="h-4 w-4 shrink-0"
-              strokeWidth={2}
+            <div className="flex-1 overflow-y-auto p-5">
+              <p className="label text-muted">
+                recent activity / {feed.activity.length}
+              </p>
+              <RepoActivity feed={feed} className="mt-4" />
+            </div>
+          </article>
+
+          <article
+            data-panel
+            style={{ ["--i" as string]: feed.repos.length + 1 }}
+            className="modal-card flex w-[min(26rem,calc(100vw-5rem))] shrink-0 snap-start flex-col bg-lime text-lime-ink"
+          >
+            <div className="flex flex-1 flex-col justify-between p-5">
+              <div className="label flex justify-between">
+                <span>{openIndex} / open slot</span>
+                <span>contact</span>
+              </div>
+              <div
+                aria-hidden="true"
+                className="display py-6 text-[clamp(5rem,12vw,8rem)] leading-none"
+              >
+                +
+              </div>
+              <p className="label">have something in mind? / say hi</p>
+            </div>
+            <a
+              href="#contact"
+              onClick={onClose}
+              className="label flex min-h-11 items-center justify-between gap-3 border-t border-lime-ink px-5 transition-colors hover:bg-lime-ink hover:text-lime"
+            >
+              start a conversation
+              <ArrowUpRight aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+            </a>
+          </article>
+        </div>
+
+        <div className="flex items-center gap-3 border-t border-line px-4 py-2.5">
+          <span className="label hidden text-muted sm:inline">
+            scroll sideways
+          </span>
+          <span
+            aria-hidden="true"
+            className="relative h-px flex-1 bg-line/25"
+          >
+            <span
+              className="absolute inset-y-0 left-0 bg-ink transition-[width] duration-200 ease-out"
+              style={{ width: `${Math.max(progress * 100, 6)}%` }}
             />
-          </a>
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              if (canPrev) step(-1);
+            }}
+            aria-disabled={!canPrev}
+            aria-label="Previous repositories"
+            className="inline-flex h-11 w-11 items-center justify-center border border-line transition-colors hover:bg-ink hover:text-paper aria-disabled:opacity-30 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink"
+          >
+            <ArrowLeft aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (canNext) step(1);
+            }}
+            aria-disabled={!canNext}
+            aria-label="Next repositories"
+            className="inline-flex h-11 w-11 items-center justify-center border border-line transition-colors hover:bg-ink hover:text-paper aria-disabled:opacity-30 aria-disabled:hover:bg-transparent aria-disabled:hover:text-ink"
+          >
+            <ArrowRight aria-hidden="true" className="h-4 w-4" strokeWidth={2} />
+          </button>
         </div>
       </div>
     </>,
