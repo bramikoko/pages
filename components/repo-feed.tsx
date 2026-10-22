@@ -41,38 +41,39 @@ export function RepoActivity({
   }
 
   return (
-    <ul className={`border-t border-line ${className}`}>
-      {feed.activity.map((item) => (
-        <li
-          key={item.url}
-          className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-line py-3"
-        >
-          <time
-            dateTime={item.date}
-            className="label w-full shrink-0 text-muted sm:w-auto"
-          >
-            {formatDateTime(item.date)}
-          </time>
-          <span className="label text-muted">{item.host}</span>
-          <a
-            href={item.url}
-            target="_blank"
-            rel="noreferrer noopener"
-            data-cursor="view"
-            className="min-w-0 flex-1 text-sm leading-snug transition-colors hover:text-muted"
-          >
-            {item.message}
-          </a>
-          <a
-            href={item.repoUrl}
-            target="_blank"
-            rel="noreferrer noopener"
-            className="label break-all text-muted underline underline-offset-4 transition-colors hover:text-ink"
-          >
-            {item.repo}
-          </a>
+    <ol className={`border-t border-line ${className}`}>
+      {feed.activity.map((item, index) => (
+        <li key={`${item.url}-${index}`} className="group border-b border-line">
+          <div className="grid grid-cols-[1.75rem_minmax(0,1fr)] gap-x-3 py-3">
+            <span className="label pt-0.5 text-muted">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="min-w-0">
+              <div className="label flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-muted">
+                <time dateTime={item.date}>{formatDateTime(item.date)}</time>
+                <span>{item.host}</span>
+              </div>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noreferrer noopener"
+                data-cursor="view"
+                className="mt-1 block text-[0.92rem] leading-snug transition-colors group-hover:text-muted"
+              >
+                {item.message}
+              </a>
+              <a
+                href={item.repoUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="label mt-1.5 inline-block text-muted underline underline-offset-4 transition-colors hover:text-ink"
+              >
+                {item.repo}
+              </a>
+            </div>
+          </div>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }

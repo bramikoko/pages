@@ -63,17 +63,6 @@ export default function Work({ feed }: { feed: RepoFeed }) {
           },
         });
 
-        gsap.to(".work-preview-wrap", {
-          y: -55,
-          ease: "none",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-
         gsap.to(".work-list", {
           y: -30,
           ease: "none",

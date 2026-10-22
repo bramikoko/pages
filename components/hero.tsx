@@ -7,6 +7,8 @@ import { useGSAP } from "@gsap/react";
 import { gsap, SplitText } from "@/lib/gsap";
 import { profile, socials } from "@/lib/data";
 import HeroParticles from "./hero-particles";
+import HeroScene from "./hero-scene";
+import LikeButton from "./like-button";
 import Magnetic from "./magnetic";
 
 export default function Hero({ ready }: { ready: boolean }) {
@@ -134,6 +136,7 @@ export default function Hero({ ready }: { ready: boolean }) {
       ref={heroRef}
       className="relative isolate flex min-h-[94svh] flex-col pt-[var(--header-h)]"
     >
+      <HeroScene />
       <HeroParticles />
       <div className="mx-auto grid w-full max-w-[1600px] flex-1 grid-cols-4 gap-x-4 gap-y-10 px-4 pt-6 pb-10 md:px-8 lg:grid-cols-12 lg:pt-10 lg:pb-10">
         <div className="col-span-4 flex flex-col justify-between lg:col-span-8">
@@ -247,7 +250,7 @@ export default function Hero({ ready }: { ready: boolean }) {
         </div>
       </div>
 
-      <div className="hero-status mx-auto grid w-full max-w-[1600px] grid-cols-2 gap-px border border-line bg-line md:grid-cols-4">
+      <div className="hero-status mx-auto grid w-full max-w-[1600px] grid-cols-2 gap-px border border-line bg-line md:grid-cols-4 lg:grid-cols-5">
         <div className="bg-paper py-3 pr-3 pl-4 md:py-4 md:pr-4 md:pl-8">
           <p className="label text-muted">based in</p>
           <p className="mt-1 text-sm">Banjarmasin, Indonesia</p>
@@ -260,9 +263,12 @@ export default function Hero({ ready }: { ready: boolean }) {
           <p className="label text-muted">studying</p>
           <p className="mt-1 text-sm">almost graduate</p>
         </div>
-        <div className="bg-paper py-3 pr-4 pl-3 md:py-4 md:pr-8 md:pl-4">
+        <div className="bg-paper p-3 md:p-4">
           <p className="label text-muted">off screen</p>
           <p className="mt-1 text-sm">anime, manga, competition</p>
+        </div>
+        <div className="col-span-2 md:col-span-4 lg:col-span-1">
+          <LikeButton />
         </div>
       </div>
     </section>
