@@ -159,11 +159,10 @@ export default function Hero({ ready }: { ready: boolean }) {
               </span>
             </h1>
             <p className="hero-subline mt-2 overflow-hidden text-[clamp(1.5rem,4.2vw,3.4rem)] font-medium leading-none tracking-[-0.045em]">
-              builds for the web.
+              this happen because it happen
             </p>
             <p className="hero-copy mt-6 max-w-xl text-[clamp(1rem,1.4vw,1.18rem)] leading-relaxed text-muted">
-              I build for the web, learn Nuxt.js, Next.js, and Laravel, and make
-              Linux behave.
+              fullstack web dev, weebs, linux guy, use ai
             </p>
           </div>
 
@@ -260,12 +259,12 @@ export default function Hero({ ready }: { ready: boolean }) {
           <p className="mt-1 text-sm">red.dev</p>
         </div>
         <div className="bg-paper p-3 md:p-4">
-          <p className="label text-muted">studying</p>
-          <p className="mt-1 text-sm">almost graduate</p>
+          <p className="label text-muted">life update</p>
+          <p className="mt-1 text-sm">preparing for competition</p>
         </div>
         <div className="bg-paper p-3 md:p-4">
           <p className="label text-muted">off screen</p>
-          <p className="mt-1 text-sm">anime, manga, competition</p>
+          <p className="mt-1 text-sm">anime, manga, sleeping</p>
         </div>
         <div className="col-span-2 md:col-span-4 lg:col-span-1">
           <LikeButton />
