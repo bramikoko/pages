@@ -1661,53 +1661,9 @@ h2.h-display,
   background: var(--bg);
 }
 
-.footer-top {
-  display: flex;
-  justify-content: center;
-  padding: 3.5rem 0 2.5rem;
-}
-
-/* ascii wordmark with an offset shadow layer + a light-to-dark gradient
-   across the glyphs so it isn't flat white */
-.ascii-wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.ascii-main,
-.ascii-shadow {
-  font-family: var(--mono);
-  font-size: clamp(9px, 1.7vw, 26px);
-  line-height: 1.12;
-  white-space: pre;
-  margin: 0;
-  overflow: hidden;
-}
-
-.ascii-main {
-  position: relative;
-  z-index: 1;
-  background: linear-gradient(180deg, var(--ascii-a) 0%, var(--ascii-b) 45%, var(--ascii-c) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.ascii-shadow {
-  position: absolute;
-  inset: 0;
-  color: var(--ascii-shadow);
-  z-index: 0;
-  transform: translate(0.4em, 0.35em);
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ascii-wrap:hover .ascii-shadow {
-  transform: translate(0.7em, 0.6em);
-}
-
 .footer-game {
   padding: 0;
+  padding-top: 2.5rem;
 }
 
 .dino-wrap {
@@ -1967,6 +1923,9 @@ h2.h-display,
 
   .nav-burger {
     display: flex;
+    /* keep the bars clear of curved screen edges / safe areas */
+    width: 74px;
+    padding-right: 20px;
   }
 
   /* the pinned horizontal stage only makes sense with a wide viewport */
@@ -1977,10 +1936,6 @@ h2.h-display,
 
   .skills-mobile {
     display: block;
-  }
-
-  .nav-burger {
-    display: flex;
   }
 
   .gh-card {
@@ -2030,17 +1985,6 @@ h2.h-display,
   .gh-card {
     width: min(240px, 78%);
     margin: 2.2rem auto 0;
-  }
-
-  /* the shadow layer's 0.4em offset is only ~3px at mobile sizes — it
-     smears the letterforms. drop it and let the wordmark breathe bigger */
-  .ascii-main,
-  .ascii-shadow {
-    font-size: clamp(10px, 3.2vw, 13px);
-  }
-
-  .ascii-shadow {
-    display: none;
   }
 
   /* the marquee moves below the form on phones — behind the card it just

@@ -12,12 +12,6 @@ import {
 
 type GameState = "idle" | "run" | "over";
 
-const ASCII_WORD = `██   ███   ██  █████ ██  ██    ██  ██    ██
-██    ██     █ █ █ █     ██ █ █  █ ██ █ █  █
-███   ██   ███ █ █ █ ██  ███  █  █ ███  █  █
-██ █  ██  █  █ █ █ █ ██  ██ █ █  █ ██ █ █  █
-███   ██   ███ █ █ █ ██  ██ █  ██  ██ █  ██`;
-
 export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkData[] }) {
   // defer the clock to the client — prerendering forbids `new Date()` at render
   const [year, setYear] = useState<string>("");
@@ -296,17 +290,6 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
   return (
     <footer className="footer">
       <div className="container">
-        <div className="footer-top">
-          <div className="ascii-wrap" data-parallax="3" aria-label="bramikoko">
-            <pre className="ascii-shadow" aria-hidden="true">
-              {ASCII_WORD}
-            </pre>
-            <pre className="ascii-main" aria-hidden="true">
-              {ASCII_WORD}
-            </pre>
-          </div>
-        </div>
-
         <div className="footer-bottom">
           <span>© {year} bram — no rights reserved, just pixels</span>
           {/* contact row — sits right beside the back-to-top button */}

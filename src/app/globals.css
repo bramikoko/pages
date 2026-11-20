@@ -24,10 +24,6 @@
   --nav-bg: rgba(10, 10, 10, 0.92);
   --hover-wash: rgba(255, 255, 255, 0.03);
   --veil: rgba(10, 10, 10, 0.6);
-  --ascii-a: #f2f2f2;
-  --ascii-b: #bdbdbd;
-  --ascii-c: #3d3d3d;
-  --ascii-shadow: #1d1d1d;
   --mono: var(--font-mono), "jetbrains mono", monospace;
   --nf: "nerdmono", var(--mono);
 }
@@ -48,10 +44,6 @@
   --paper-ink: #f2f2f2;
   --nav-bg: rgba(242, 242, 242, 0.92);
   --hover-wash: rgba(0, 0, 0, 0.05);
-  --ascii-a: #1d1d1d;
-  --ascii-b: #454545;
-  --ascii-c: #8f8f8f;
-  --ascii-shadow: #c4c4c4;
   --veil: rgba(242, 242, 242, 0.2);
 }
 
