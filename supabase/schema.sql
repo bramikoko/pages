@@ -9,7 +9,7 @@ create table if not exists public.works (
   title text not null,
   year text not null default '',
   stack text[] not null default '{}',
-  desc text not null default '',
+  description text not null default '',
   detail text not null default '',
   image text,
   link text,
@@ -23,7 +23,7 @@ create table if not exists public.experience (
   period text not null default '',
   title text not null,
   place text not null default '',
-  desc text not null default '',
+  description text not null default '',
   detail text not null default '',
   image text,
   sort int not null default 0,
@@ -36,7 +36,7 @@ create table if not exists public.skills (
   name text not null,
   pct int not null default 0 check (pct between 0 and 100),
   icon text not null default '',
-  desc text not null default '',
+  description text not null default '',
   kind text not null default 'hard' check (kind in ('hard', 'soft')),
   sort int not null default 0,
   created_at timestamptz not null default now()
@@ -103,3 +103,6 @@ create policy "admin manages skills" on public.skills for all to authenticated u
 create policy "admin manages posts" on public.posts for all to authenticated using (true) with check (true);
 create policy "admin manages testimonials" on public.testimonials for all to authenticated using (true) with check (true);
 create policy "admin manages links" on public.contact_links for all to authenticated using (true) with check (true);
+
+-- refresh the api schema cache so the tables are visible immediately
+notify pgrst, 'reload schema';

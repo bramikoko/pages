@@ -44,7 +44,7 @@ export async function getWorks(): Promise<WorkRow[]> {
     title: s(r.title),
     year: s(r.year),
     stack: Array.isArray(r.stack) ? (r.stack as string[]) : [],
-    desc: s(r.desc),
+    desc: s(r.description),
     detail: s(r.detail),
     image: s(r.image) || undefined,
     link: s(r.link) || undefined,
@@ -59,7 +59,7 @@ export async function getExperience(): Promise<ExpRow[]> {
     period: s(r.period),
     title: s(r.title),
     place: s(r.place),
-    desc: s(r.desc),
+    desc: s(r.description),
     detail: s(r.detail),
     image: s(r.image) || undefined,
   }));
@@ -72,7 +72,7 @@ export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
     name: s(r.name),
     pct: n(r.pct),
     icon: s(r.icon),
-    desc: s(r.desc),
+    desc: s(r.description),
   });
   return {
     hard: rows.filter((r) => r.kind !== "soft").map(map),
