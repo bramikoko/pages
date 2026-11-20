@@ -110,7 +110,7 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
     // theme-aware sprite colors — read per frame so the game follows the toggle
     const PAL = {
       dark: { bg: "#0a0a0a", far: "#262626", near: "#4a4a4a", cacTop: "#c9c9c9", cacBot: "#5a5a5a", dinoTop: "#f2f2f2", dinoBot: "#6a6a6a" },
-      light: { bg: "#f2f2f2", far: "#d4d4d4", near: "#a8a8a8", cacTop: "#3a3a3a", cacBot: "#8a8a8a", dinoTop: "#141414", dinoBot: "#7a7a7a" },
+      light: { bg: "#f2f2f2", far: "#c6c6c6", near: "#8f8f8f", cacTop: "#2e2e2e", cacBot: "#7a7a7a", dinoTop: "#111111", dinoBot: "#6a6a6a" },
     } as const;
 
     const draw = () => {

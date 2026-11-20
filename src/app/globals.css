@@ -52,7 +52,7 @@
   --ascii-b: #454545;
   --ascii-c: #8f8f8f;
   --ascii-shadow: #c4c4c4;
-  --veil: rgba(242, 242, 242, 0.65);
+  --veil: rgba(242, 242, 242, 0.2);
 }
 
 /* the dotted pixel textures are white-on-dark / black-on-light — swap
