@@ -242,8 +242,10 @@ export default function Skills({
     setActive(null);
   }, []);
 
-  // dragging by the title bar
+  // dragging by the title bar — re-runs when the portal mounts, since
+  // the window node doesn't exist on the first render
   useEffect(() => {
+    if (!mounted) return;
     const win = winRef.current;
     const bar = win?.querySelector<HTMLElement>(".win-bar");
     if (!win || !bar) return;
@@ -281,7 +283,7 @@ export default function Skills({
       bar.removeEventListener("pointerup", up);
       bar.removeEventListener("pointercancel", up);
     };
-  }, []);
+  }, [mounted]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
