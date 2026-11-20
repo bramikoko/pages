@@ -44,6 +44,12 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
       const b = backdropRef.current;
       const f = formRef.current;
       if (!b || !f) return;
+      // on phones the marquee sits below the form in normal flow —
+      // no centering transform needed
+      if (window.innerWidth <= 640) {
+        b.style.transform = "";
+        return;
+      }
       const fr = f.getBoundingClientRect();
       const br = b.getBoundingClientRect();
       const dy = (fr.top + fr.height / 2) - (br.top + br.height / 2);

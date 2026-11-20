@@ -1835,10 +1835,148 @@ h2.h-display,
   }
 }
 
+/* mobile skills — a tap-to-expand list instead of the pinned horizontal
+   stage; same data, no scroll gymnastics */
+.skills-mobile {
+  display: none;
+  padding: 0 24px;
+}
+
+.skm-group + .skm-group {
+  margin-top: 3rem;
+}
+
+.skm-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-dim);
+}
+
+.skm-item {
+  border-top: 1px solid var(--line);
+}
+
+.skm-item:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.skm-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 1.05rem 0;
+  background: none;
+  border: 0;
+  font-family: var(--mono);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.skm-head:active {
+  background: var(--hover-wash);
+}
+
+.skm-head .skill-icon {
+  width: 1.4rem;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--ink-dim);
+}
+
+.skm-name {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+.skm-pct {
+  font-size: 0.75rem;
+  color: var(--ink-dim);
+}
+
+.skm-chev {
+  font-size: 0.7rem;
+  color: var(--ink-dim);
+}
+
+.skm-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.skm-item.open .skm-body {
+  grid-template-rows: 1fr;
+}
+
+.skm-body > div {
+  overflow: hidden;
+}
+
+.skm-inner {
+  padding: 0 0 1.2rem 2.3rem;
+}
+
+.skm-inner .skill-bar {
+  margin-bottom: 0.8rem;
+}
+
+.skm-inner .skill-bar i {
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+.skm-item.open .skm-inner .skill-bar i {
+  width: var(--pct);
+}
+
+.skm-desc {
+  max-width: 46ch;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+}
+
+.skm-level {
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skm-body,
+  .skm-inner .skill-bar i {
+    transition: none;
+  }
+}
+
 /* ============ responsive ============ */
 @media (max-width: 900px) {
   .nav-links {
     display: none;
+  }
+
+  /* the cta lives inside the fullscreen menu on mobile */
+  .nav-cta {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+
+  /* the pinned horizontal stage only makes sense with a wide viewport */
+  .skills-viewport,
+  .skills-progress {
+    display: none;
+  }
+
+  .skills-mobile {
+    display: block;
   }
 
   .nav-burger {
@@ -1857,7 +1995,7 @@ h2.h-display,
   }
 
   .about-side.right {
-    align-items: flex-start;
+    align-items: flex-end;
   }
 
   .testi-grid {
@@ -1887,5 +2025,38 @@ h2.h-display,
   .skill-card.short,
   .skill-card.mid {
     margin-top: 0;
+  }
+
+  .gh-card {
+    width: min(240px, 78%);
+    margin: 2.2rem auto 0;
+  }
+
+  /* the shadow layer's 0.4em offset is only ~3px at mobile sizes — it
+     smears the letterforms. drop it and let the wordmark breathe bigger */
+  .ascii-main,
+  .ascii-shadow {
+    font-size: clamp(10px, 3.2vw, 13px);
+  }
+
+  .ascii-shadow {
+    display: none;
+  }
+
+  /* the marquee moves below the form on phones — behind the card it just
+     fights the inputs for attention */
+  .testimony {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .testimony .container {
+    order: -1;
+  }
+
+  .t-backdrop {
+    position: static;
+    transform: none !important;
+    padding: 2.5rem 0 1rem;
   }
 }

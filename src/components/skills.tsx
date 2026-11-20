@@ -21,6 +21,8 @@ export default function Skills({
   const barRef = useRef<HTMLElement>(null);
   const drag = useRef<{ dx: number; dy: number } | null>(null);
   const [active, setActive] = useState<{ s: Skill; soft: boolean } | null>(null);
+  // which mobile accordion rows are expanded
+  const [open, setOpen] = useState<Set<string>>(new Set());
 
   // rows under this many cards are centered and static — they don't scroll.
   // the horizontal pin only exists when at least one row actually overflows
@@ -31,6 +33,10 @@ export default function Skills({
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      // the pinned horizontal stage only exists on wide viewports — on
+      // mobile the section renders as a tap-to-expand list instead, so
+      // every scroll/pin trigger must stay out of the way
+      gsap.matchMedia().add("(min-width: 901px)", () => {
       const track = trackRef.current;
       if (!track) return;
 
@@ -173,6 +179,7 @@ export default function Skills({
           );
         });
       });
+      });
     }, root);
 
     return () => ctx.revert();
@@ -308,6 +315,51 @@ export default function Skills({
 
   const level = (pct: number) => (pct >= 90 ? "advanced" : pct >= 75 ? "solid" : "growing");
 
+  const toggleSkm = useCallback((key: string) => {
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
+
+  const skmItem = (s: Skill, key: string, soft: boolean) => {
+    const isOpen = open.has(key);
+    return (
+      <div className={`skm-item${isOpen ? " open" : ""}`} key={key}>
+        <button
+          className="skm-head"
+          type="button"
+          aria-expanded={isOpen}
+          onClick={() => toggleSkm(key)}
+        >
+          <span className="skill-icon nf" aria-hidden="true">
+            {s.icon}
+          </span>
+          <span className="skm-name">{s.name}</span>
+          <span className="skm-pct">{s.pct}%</span>
+          <span className="skm-chev nf" aria-hidden="true">
+            {isOpen ? "\uf077" : "\uf078"}
+          </span>
+        </button>
+        <div className="skm-body">
+          <div>
+            <div className="skm-inner">
+              <div className="skill-bar">
+                <i style={{ "--pct": `${s.pct}%` } as React.CSSProperties} />
+              </div>
+              <p className="skm-desc">{s.desc}</p>
+              <p className="skm-level">
+                {level(s.pct)} — {soft ? "soft skill" : "hard skill"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className={`skills${needsScroll ? "" : " no-pin"}`} id="skills" ref={root}>
       <div className="skills-viewport">
@@ -357,6 +409,36 @@ export default function Skills({
             </span>
             <span className="bracket">]</span>
           </div>
+        </div>
+      </div>
+
+      {/* mobile — same data as a tap-to-expand list, no pinned scroll */}
+      <div className="skills-mobile">
+        <div className="skills-head">
+          <p className="sec-label">
+            <span className="sec-index">02</span> skills
+          </p>
+          <h2 className="h-display" style={{ fontSize: "clamp(2rem, 8vw, 3.6rem)" }}>
+            things i am <span className="outline">dangerous</span> with
+          </h2>
+        </div>
+
+        <div className="skm-group">
+          <span className="skm-label">hard skills</span>
+          {skills.length === 0 ? (
+            emptyRow("hard skills")
+          ) : (
+            skills.map((s, i) => skmItem(s, `h${i}`, false))
+          )}
+        </div>
+
+        <div className="skm-group">
+          <span className="skm-label">soft skills</span>
+          {softSkills.length === 0 ? (
+            emptyRow("soft skills")
+          ) : (
+            softSkills.map((s, i) => skmItem(s, `s${i}`, true))
+          )}
         </div>
       </div>
 
