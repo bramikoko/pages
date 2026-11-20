@@ -23,7 +23,6 @@ export default function PixelBackground() {
     let h = 0;
     let raf = 0;
     let running = true;
-    let scrollY = 0;
 
     type Cell = { x: number; y: number; shade: number; target: number; tick: number };
     type P = { x: number; y: number; s: number; vy: number; vx: number; a: number };
@@ -42,6 +41,7 @@ export default function PixelBackground() {
       canvas!.style.width = `${w}px`;
       canvas!.style.height = `${h}px`;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx!.imageSmoothingEnabled = false;
 
       const cols = Math.ceil(w / CELL) + 1;
       const rows = Math.ceil(h / CELL) + 1;
@@ -70,6 +70,14 @@ export default function PixelBackground() {
     }
 
     function draw() {
+      // read the scroll position in the same frame we paint — reading it
+      // from a scroll event puts the parallax out of phase with the raf
+      // and the whole field stutters while scrolling
+      const scrollY = window.scrollY;
+      // quantize the parallax to whole pixels — fractional fillRect coords
+      // antialias and the grid looks blurry/steppy while in motion
+      const cellOff = Math.round(scrollY * 0.05) % CELL;
+
       ctx!.fillStyle = "#0a0a0a";
       ctx!.fillRect(0, 0, w, h);
 
@@ -82,7 +90,7 @@ export default function PixelBackground() {
         c.shade += Math.sign(c.target - c.shade);
         if (c.shade !== 0) {
           ctx!.fillStyle = shades[c.shade];
-          ctx!.fillRect(c.x, c.y - (scrollY * 0.05) % CELL, CELL - 2, CELL - 2);
+          ctx!.fillRect(c.x, c.y - cellOff, CELL - 2, CELL - 2);
         }
       }
 
@@ -97,7 +105,7 @@ export default function PixelBackground() {
         if (p.x < -6) p.x = w + 6;
         if (p.x > w + 6) p.x = -6;
         ctx!.fillStyle = `rgba(237,237,237,${p.a})`;
-        ctx!.fillRect(p.x, p.y - scrollY * 0.12, p.s, p.s);
+        ctx!.fillRect(Math.round(p.x), Math.round(p.y - scrollY * 0.12), p.s, p.s);
       }
     }
 
@@ -106,10 +114,6 @@ export default function PixelBackground() {
       draw();
       raf = requestAnimationFrame(loop);
     }
-
-    const onScroll = () => {
-      scrollY = window.scrollY;
-    };
 
     const onVis = () => {
       if (document.hidden) {
@@ -133,14 +137,12 @@ export default function PixelBackground() {
       draw();
     });
     ro.observe(document.documentElement);
-    window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", onVis);
 
     return () => {
       running = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
-      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
