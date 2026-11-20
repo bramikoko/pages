@@ -104,5 +104,12 @@ create policy "admin manages posts" on public.posts for all to authenticated usi
 create policy "admin manages testimonials" on public.testimonials for all to authenticated using (true) with check (true);
 create policy "admin manages links" on public.contact_links for all to authenticated using (true) with check (true);
 
+-- ── grants (tables made via the sql editor can miss default privileges)
+grant usage on schema public to anon, authenticated;
+grant select on all tables in schema public to anon, authenticated;
+grant insert on public.testimonials to anon; -- rls forces approved = false
+grant insert, update, delete on all tables in schema public to authenticated;
+grant all on all sequences in schema public to anon, authenticated;
+
 -- refresh the api schema cache so the tables are visible immediately
 notify pgrst, 'reload schema';
