@@ -107,27 +107,35 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
       rows.forEach((row, r) => ctx.fillText(row, x, y + r * CH + CH - 1));
     };
 
+    // theme-aware sprite colors — read per frame so the game follows the toggle
+    const PAL = {
+      dark: { bg: "#0a0a0a", far: "#262626", near: "#4a4a4a", cacTop: "#c9c9c9", cacBot: "#5a5a5a", dinoTop: "#f2f2f2", dinoBot: "#6a6a6a" },
+      light: { bg: "#f2f2f2", far: "#d4d4d4", near: "#a8a8a8", cacTop: "#3a3a3a", cacBot: "#8a8a8a", dinoTop: "#141414", dinoBot: "#7a7a7a" },
+    } as const;
+
     const draw = () => {
-      ctx.fillStyle = "#0a0a0a"; // same as the footer background
+      const p =
+        document.documentElement.dataset.theme === "light" ? PAL.light : PAL.dark;
+      ctx.fillStyle = p.bg; // same as the footer background
       ctx.fillRect(0, 0, W, H);
 
       // ground: a scrolling line of dashes
       ctx.font = "8px monospace";
       const dash = "-".repeat(Math.ceil(W / CW) + 2);
       const off = (frames * speed * 0.55) % CW;
-      ctx.fillStyle = "#4a4a4a";
+      ctx.fillStyle = p.near;
       ctx.fillText(dash, -off, GROUND + 8);
-      ctx.fillStyle = "#262626";
+      ctx.fillStyle = p.far;
       ctx.fillText(dash, -(off * 0.5) % CW, GROUND + 18);
 
       // cacti
       for (const o of obstacles) {
-        drawSprite(CACTUS, o.x, GROUND - o.h, "#c9c9c9", "#5a5a5a");
+        drawSprite(CACTUS, o.x, GROUND - o.h, p.cacTop, p.cacBot);
       }
 
       // dino with alternating legs
       const leg = Math.floor(frames / 6) % 2 === 0;
-      drawSprite(leg ? DINO_A : DINO_B, player.x, player.y, "#f2f2f2", "#6a6a6a");
+      drawSprite(leg ? DINO_A : DINO_B, player.x, player.y, p.dinoTop, p.dinoBot);
     };
 
     const step = (ts: number) => {
@@ -246,6 +254,12 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
     };
     canvas.addEventListener("pointerdown", onClick);
 
+    // idle frame holds stale colors after a theme flip — repaint once
+    const onTheme = () => {
+      if (mode === "idle") drawIdle();
+    };
+    window.addEventListener("themechange", onTheme);
+
     drawIdle();
     apiRef.current = { start, stop: stopGame };
     return () => {
@@ -254,6 +268,7 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("keydown", onKey);
       canvas.removeEventListener("pointerdown", onClick);
+      window.removeEventListener("themechange", onTheme);
     };
   }, []);
 

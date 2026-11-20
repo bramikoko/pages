@@ -412,7 +412,7 @@ html[data-theme="light"] .theme-switch .rocker {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(10, 10, 10, 0.94);
+  background: var(--nav-bg);
   border-top: 1px solid var(--ink);
   padding: 0.85rem;
   transform: translateY(102%);
@@ -698,7 +698,8 @@ html[data-theme="light"] .theme-switch .rocker {
 
 .drawer-foot .small {
   font-size: 0.7rem;
-  color: #555;
+  color: var(--paper-ink);
+  opacity: 0.55;
   margin-top: 0.3rem;
 }
 
@@ -1735,7 +1736,7 @@ h2.h-display,
   font-size: 0.72rem;
   color: var(--ink-dim);
   letter-spacing: 0.1em;
-  background: rgba(10, 10, 10, 0.6);
+  background: var(--veil);
   cursor: pointer;
   border: 0;
   width: 100%;

@@ -23,6 +23,7 @@
   --paper-ink: #0d0d0d;
   --nav-bg: rgba(10, 10, 10, 0.92);
   --hover-wash: rgba(255, 255, 255, 0.03);
+  --veil: rgba(10, 10, 10, 0.6);
   --ascii-a: #f2f2f2;
   --ascii-b: #bdbdbd;
   --ascii-c: #3d3d3d;
@@ -32,8 +33,8 @@
 }
 
 /* ---- light theme ----
-   same grayscale family, flipped. the hero (home) and the os-style
-   drawers/windows keep the dark palette — see the dark-stay block below */
+   same grayscale family, flipped — every surface inverts, including the
+   hero, the drawers (paper → ink) and the os-style windows */
 [data-theme="light"] {
   --bg: #f2f2f2;
   --bg2: #e9e9e9;
@@ -51,32 +52,17 @@
   --ascii-b: #454545;
   --ascii-c: #8f8f8f;
   --ascii-shadow: #c4c4c4;
+  --veil: rgba(242, 242, 242, 0.65);
 }
 
-/* surfaces that stay dark in light mode: the hero (home) slab and the
-   os-style windows (my works / more about me / skill.info / blog.reader).
-   re-declaring the dark palette here means every child keeps its look */
-[data-theme="light"] .hero,
-[data-theme="light"] .drawer,
-[data-theme="light"] .win,
-[data-theme="light"] .project-pop {
-  --bg: #0a0a0a;
-  --bg2: #101010;
-  --bg3: #161616;
-  --line: #2b2b2b;
-  --line2: #3a3a3a;
-  --ink: #ededed;
-  --ink-dim: #9a9a9a;
-  --ink-faint: #5c5c5c;
-  --paper: #f2f2f2;
-  --paper-ink: #0d0d0d;
-  --hover-wash: rgba(255, 255, 255, 0.03);
+/* the dotted pixel textures are white-on-dark / black-on-light — swap
+   them so they stay visible on inverted surfaces */
+[data-theme="light"] .px-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect x='0' y='0' width='2' height='2' fill='%23000000' fill-opacity='0.12'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%23000000' fill-opacity='0.06'/%3E%3C/svg%3E");
 }
 
-[data-theme="light"] .hero {
-  /* the hero sits over the (now light) pixel canvas — give it a solid
-     dark slab so "home" reads as its own dark terminal block */
-  background: #0a0a0a;
+[data-theme="light"] .px-dots-dark {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect x='0' y='0' width='2' height='2' fill='%23ffffff' fill-opacity='0.10'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
 }
 
 * {
