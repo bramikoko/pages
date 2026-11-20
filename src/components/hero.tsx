@@ -41,7 +41,10 @@ export default function Hero() {
         ease: "power3.out",
         delay: 0.9,
       });
-      gsap.from(".nav", { yPercent: -100, duration: 0.6, ease: "power3.out" });
+      // .nav lives outside this section — pass the element directly so
+      // the context scope doesn't hide it (scoped selector text = not found)
+      const navEl = document.querySelector(".nav");
+      if (navEl) gsap.from(navEl, { yPercent: -100, duration: 0.6, ease: "power3.out" });
 
       // parallax drift on the title
       gsap.to(".hero-title", {
