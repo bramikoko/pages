@@ -39,7 +39,7 @@ export const SECTIONS: SectionCfg[] = [
       { key: "link", label: "link url", type: "text", placeholder: "https://..." },
       { key: "sort", label: "order", type: "num" },
     ],
-    defaults: { title: "", year: "", stack: [], desc: "", detail: "", sort: 0 },
+    defaults: { title: "", year: "", stack: [], description: "", detail: "", sort: 0 },
   },
   {
     key: "experience",
@@ -56,7 +56,7 @@ export const SECTIONS: SectionCfg[] = [
       { key: "image", label: "image url", type: "text" },
       { key: "sort", label: "order", type: "num" },
     ],
-    defaults: { period: "", title: "", place: "", desc: "", detail: "", sort: 0 },
+    defaults: { period: "", title: "", place: "", description: "", detail: "", sort: 0 },
   },
   {
     key: "skills",
@@ -72,7 +72,7 @@ export const SECTIONS: SectionCfg[] = [
       { key: "kind", label: "kind", type: "select", options: ["hard", "soft"] },
       { key: "sort", label: "order", type: "num" },
     ],
-    defaults: { name: "", pct: 50, icon: "", desc: "", kind: "hard", sort: 0 },
+    defaults: { name: "", pct: 50, icon: "", description: "", kind: "hard", sort: 0 },
   },
   {
     key: "posts",
