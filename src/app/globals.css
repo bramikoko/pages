@@ -161,6 +161,16 @@ section {
   transform-origin: left;
 }
 
+/* mirror line on the right so the label text sits dead center */
+.sec-label::after {
+  content: "";
+  width: 2.5rem;
+  height: 1px;
+  background: var(--line2);
+  transform: scaleX(var(--line-scale, 1));
+  transform-origin: right;
+}
+
 .sec-index {
   color: var(--ink-dim);
 }

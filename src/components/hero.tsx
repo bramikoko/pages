@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { heroHookLines, heroDesc, profile, GITHUB } from "@/src/lib/data";
@@ -12,6 +12,49 @@ export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // live github profile — the static data.ts numbers are only the SSR/
+  // fallback view; on mount we refresh from the api (30 min localStorage
+  // cache so a page full of visitors never burns the 60 req/h limit)
+  const [gh, setGh] = useState(profile);
+  useEffect(() => {
+    const KEY = "gh-profile";
+    const TTL = 30 * 60 * 1000;
+    const apply = (d: Record<string, unknown>) =>
+      setGh((p) => ({
+        ...p,
+        // the whole site is lowercase — keep api strings in line
+        name: ((d.name as string) || p.name).toLowerCase(),
+        bio: ((d.bio as string) || p.bio).toLowerCase(),
+        location: ((d.location as string) || p.location).toLowerCase(),
+        followers: (d.followers as number) ?? p.followers,
+        following: (d.following as number) ?? p.following,
+        repos: (d.public_repos as number) ?? p.repos,
+        avatar: (d.avatar_url as string) || p.avatar,
+      }));
+    try {
+      const c = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (c?.d && Date.now() - c.t < TTL) {
+        apply(c.d);
+        return;
+      }
+    } catch {
+      // broken cache entry — just refetch
+    }
+    fetch(`https://api.github.com/users/${profile.handle}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((d) => {
+        apply(d);
+        try {
+          localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), d }));
+        } catch {
+          // private mode — cache is best-effort
+        }
+      })
+      .catch(() => {
+        // offline / rate-limited — the static numbers stay
+      });
+  }, []);
 
   // intro + parallax
   useEffect(() => {
@@ -250,7 +293,7 @@ export default function Hero() {
       <div className="container">
         <p className="hero-eyebrow">
           <span className="blink" aria-hidden="true" />
-          <span>{profile.role} — {profile.location}</span>
+          <span>{gh.role} — {gh.location}</span>
         </p>
 
         <h1
@@ -286,24 +329,24 @@ export default function Hero() {
       <div
         className="gh-card"
         ref={cardRef}
-        aria-label={`github profile: ${profile.handle}`}
+        aria-label={`github profile: ${gh.handle}`}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={profile.avatar} alt="" draggable={false} />
+        <img src={gh.avatar} alt="" draggable={false} />
         <div className="gh-info">
-          <div className="gh-card-name">{profile.name}</div>
-          <div className="gh-card-role">@{profile.handle} — {profile.bio}</div>
+          <div className="gh-card-name">{gh.name}</div>
+          <div className="gh-card-role">@{gh.handle} — {gh.bio}</div>
           <div className="gh-card-stats">
             <div className="gh-stat">
-              <b>{profile.repos}</b>
+              <b>{gh.repos}</b>
               <span>repos</span>
             </div>
             <div className="gh-stat">
-              <b>{profile.followers}</b>
+              <b>{gh.followers}</b>
               <span>followers</span>
             </div>
             <div className="gh-stat">
-              <b>{profile.following}</b>
+              <b>{gh.following}</b>
               <span>following</span>
             </div>
           </div>

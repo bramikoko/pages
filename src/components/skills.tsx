@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Skill } from "@/src/lib/data";
@@ -21,6 +22,10 @@ export default function Skills({
   const barRef = useRef<HTMLElement>(null);
   const drag = useRef<{ dx: number; dy: number } | null>(null);
   const [active, setActive] = useState<{ s: Skill; soft: boolean } | null>(null);
+  // the modal is portaled to <body> — inside the section it would be
+  // trapped by the section's stacking context and slide under the nav
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   // which mobile accordion rows are expanded
   const [open, setOpen] = useState<Set<string>>(new Set());
 
@@ -442,7 +447,11 @@ export default function Skills({
         </div>
       </div>
 
-      {/* dim backdrop so the skill modal owns the screen */}
+      {/* dim backdrop so the skill modal owns the screen — portaled to
+          <body> so it stacks above nav, drawers and everything else */}
+      {mounted &&
+        createPortal(
+          <>
       <div className="win-backdrop" ref={backdropRef} onClick={closeSkill} aria-hidden="true" />
 
       {/* draggable skill modal — same window treatment as the blog reader */}
@@ -484,7 +493,11 @@ export default function Skills({
             </>
           )}
         </div>
-      </div>
+          </div>
+        </>
+      ,
+      document.body,
+      )}
     </section>
   );
 }

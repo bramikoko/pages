@@ -893,6 +893,7 @@ html[data-theme="light"] .theme-switch .rocker {
 .skills {
   border-top: 1px solid var(--line);
   z-index: 1;
+  padding-top: 5rem;
 }
 
 .skills-viewport {
@@ -2002,5 +2003,20 @@ h2.h-display,
     position: static;
     transform: none !important;
     padding: 2.5rem 0 1rem;
+  }
+
+  /* contact breathes less on phones — the full-size version wastes
+     the whole screen on padding */
+  .contact {
+    padding: 4.5rem 0;
+  }
+
+  .contact-title {
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-link {
+    padding: 1rem 0.75rem;
+    font-size: 0.95rem;
   }
 }

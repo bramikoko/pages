@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { gsap } from "gsap";
 import type { BlogPostData } from "@/src/app/page";
 
@@ -9,6 +10,10 @@ export default function Blog({ posts }: { posts: BlogPostData[] }) {
   const backdropRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const drag = useRef<{ dx: number; dy: number } | null>(null);
+  // portal the reader to <body> — inside the section it would be trapped
+  // by the section's stacking context and slide under the nav
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const openWin = useCallback(() => {
     const win = winRef.current;
@@ -151,7 +156,11 @@ export default function Blog({ posts }: { posts: BlogPostData[] }) {
         </div>
       </div>
 
-      {/* dim backdrop so the reader window owns the screen */}
+      {/* dim backdrop so the reader window owns the screen — portaled to
+          <body> so it stacks above nav and everything else */}
+      {mounted &&
+        createPortal(
+          <>
       <div className="win-backdrop" ref={backdropRef} onClick={closeWin} aria-hidden="true" />
 
       {/* draggable reader window */}
@@ -182,6 +191,10 @@ export default function Blog({ posts }: { posts: BlogPostData[] }) {
           ))}
         </div>
       </div>
+        </>
+      ,
+      document.body,
+      )}
     </section>
   );
 }
