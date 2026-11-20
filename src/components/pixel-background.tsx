@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 /**
  * animated pixel field: a coarse grid of cells flickering between gray
- * shades, drifting square particles, and a subtle scroll parallax.
+ * shades, plus drifting square particles in two parallax depth layers.
  * pure canvas 2d — pauses when the tab is hidden, static under
  * prefers-reduced-motion.
  */
@@ -25,7 +25,7 @@ export default function PixelBackground() {
     let running = true;
 
     type Cell = { x: number; y: number; shade: number; target: number; tick: number };
-    type P = { x: number; y: number; s: number; vy: number; vx: number; a: number };
+    type P = { x: number; y: number; s: number; vy: number; vx: number; a: number; par: number };
 
     let cells: Cell[] = [];
     let parts: P[] = [];
@@ -33,7 +33,9 @@ export default function PixelBackground() {
     const shades = ["#0d0d0d", "#121212", "#181818", "#1f1f1f", "#262626"];
 
     function build() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      // dpr 1 on purpose: the field is chunky pixels anyway, and a full-screen
+      // canvas at devicePixelRatio repaints 2-4x more pixels every frame
+      const dpr = 1;
       w = window.innerWidth;
       h = window.innerHeight;
       canvas!.width = w * dpr;
@@ -59,29 +61,29 @@ export default function PixelBackground() {
       }
 
       const count = Math.min(70, Math.floor((w * h) / 26000));
-      parts = Array.from({ length: count }, () => ({
+      parts = Array.from({ length: count }, (_, i) => ({
         x: Math.random() * w,
         y: Math.random() * h,
         s: Math.random() < 0.7 ? 2 : 3,
         vy: -(0.15 + Math.random() * 0.45),
         vx: (Math.random() - 0.5) * 0.2,
         a: 0.08 + Math.random() * 0.3,
+        // two depth layers: far dots drift with scroll, near dots rush past
+        par: i % 3 === 0 ? 0.18 : 0.06,
       }));
     }
 
     function draw() {
-      // read the scroll position in the same frame we paint — reading it
-      // from a scroll event puts the parallax out of phase with the raf
-      // and the whole field stutters while scrolling
-      const scrollY = window.scrollY;
-      // quantize the parallax to whole pixels — fractional fillRect coords
-      // antialias and the grid looks blurry/steppy while in motion
-      const cellOff = Math.round(scrollY * 0.05) % CELL;
+      // NOTE: the cell grid gets NO scroll parallax on purpose. a uniformly
+      // random flickering field looks identical wherever it sits, so the old
+      // `(scrollY * 0.05) % CELL` offset had exactly one visible effect: the
+      // whole lit pattern teleported a cell-height every time the offset
+      // wrapped — the "drops then snaps" stutter while scrolling.
 
       ctx!.fillStyle = "#0a0a0a";
       ctx!.fillRect(0, 0, w, h);
 
-      // flickering cells
+      // flickering cells — fixed to the viewport
       for (const c of cells) {
         if (--c.tick <= 0) {
           c.tick = 20 + Math.floor(Math.random() * 90);
@@ -90,11 +92,14 @@ export default function PixelBackground() {
         c.shade += Math.sign(c.target - c.shade);
         if (c.shade !== 0) {
           ctx!.fillStyle = shades[c.shade];
-          ctx!.fillRect(c.x, c.y - cellOff, CELL - 2, CELL - 2);
+          ctx!.fillRect(c.x, c.y, CELL - 2, CELL - 2);
         }
       }
 
-      // drifting particles with parallax
+      // drifting particles — the only parallax layer, wrapped seamlessly
+      // so the field never drains no matter how deep the page scrolls
+      const range = h + 12;
+      const scrollY = window.scrollY;
       for (const p of parts) {
         p.x += p.vx;
         p.y += p.vy;
@@ -104,8 +109,10 @@ export default function PixelBackground() {
         }
         if (p.x < -6) p.x = w + 6;
         if (p.x > w + 6) p.x = -6;
+        let dy = (p.y - scrollY * p.par) % range;
+        if (dy < -6) dy += range;
         ctx!.fillStyle = `rgba(237,237,237,${p.a})`;
-        ctx!.fillRect(Math.round(p.x), Math.round(p.y - scrollY * 0.12), p.s, p.s);
+        ctx!.fillRect(Math.round(p.x), Math.round(dy), p.s, p.s);
       }
     }
 
