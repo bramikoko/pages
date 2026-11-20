@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export type Testi = {
   id: string;
@@ -30,6 +31,7 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
   const empty = list.length === 0;
 
   const [rating, setRating] = useState(0);
+  const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<{ kind: "ok" | "err" | "idle"; msg: string }>({
     kind: "idle",
     msg: "",
@@ -58,21 +60,48 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
     align();
     window.addEventListener("resize", align);
     window.addEventListener("load", align);
+    // webfonts swap + dynamic content change the form's height after the
+    // first paint — recenter whenever either box actually resizes
+    document.fonts?.ready.then(align);
+    const ro = new ResizeObserver(align);
+    if (formRef.current) ro.observe(formRef.current);
+    if (backdropRef.current) ro.observe(backdropRef.current);
     const t = window.setTimeout(align, 600); // after webfonts settle
     return () => {
       window.removeEventListener("resize", align);
       window.removeEventListener("load", align);
       window.clearTimeout(t);
+      ro.disconnect();
     };
   }, []);
 
-  // TODO(db): wire this back to a real endpoint once the new
-  // database lands — the form itself stays exactly as-is
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  // submit lands in the supabase `testimonials` table with approved =
+  // false — it shows up in /admin for review before going public
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    e.currentTarget.reset();
-    setRating(0);
-    setStatus({ kind: "err", msg: "// not stored yet — new database on the way." });
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") || "").trim(),
+      role: String(fd.get("role") || "").trim() || null,
+      message: String(fd.get("message") || "").trim(),
+      rating: rating > 0 ? rating : null,
+      approved: false,
+    };
+    if (!payload.name || !payload.message) return;
+    setSending(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("testimonials").insert(payload);
+      if (error) throw error;
+      form.reset();
+      setRating(0);
+      setStatus({ kind: "ok", msg: "// thanks! it lands after a quick review." });
+    } catch {
+      setStatus({ kind: "err", msg: "// failed to send — try again in a bit." });
+    } finally {
+      setSending(false);
+    }
   };
 
   // marquee rows need enough copies to loop seamlessly past any viewport
@@ -167,9 +196,9 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
               ))}
             </div>
           </div>
-          <button className="btn btn-paper" type="submit">
+          <button className="btn btn-paper" type="submit" disabled={sending}>
             <span className="nf" aria-hidden="true">&#xf0e0;</span>
-            <span>drop it</span>
+            <span>{sending ? "sending..." : "drop it"}</span>
           </button>
           <p className={`form-status ${status.kind}`} role="status">
             {status.msg}

@@ -5,36 +5,29 @@ import Hero from "@/src/components/hero";
 import About from "@/src/components/about";
 import Skills from "@/src/components/skills";
 import Blog from "@/src/components/blog";
-import Testimony, { type Testi } from "@/src/components/testimony";
-import Contact, { type ContactLinkData } from "@/src/components/contact";
+import Testimony from "@/src/components/testimony";
+import Contact from "@/src/components/contact";
 import Footer from "@/src/components/footer";
-import type { Project, Skill, Experience, BlogPost } from "@/src/lib/data";
-import {
-  sampleWorks,
-  sampleExperience,
-  sampleHardSkills,
-  sampleSoftSkills,
-  samplePosts,
-  sampleTestimonials,
-} from "@/src/lib/data";
+import type { Skill, BlogPost } from "@/src/lib/data";
+import { getWorks, getExperience, getSkills, getPosts, getTestimonials, getLinks } from "@/src/lib/cms";
+import type { WorkRow, ExpRow } from "@/src/lib/cms";
 
-export type WorkData = Omit<Project, "id"> & { id: number };
-export type ExperienceData = Experience & { id: number };
+export type WorkData = WorkRow;
+export type ExperienceData = ExpRow;
 export type BlogPostData = BlogPost;
 
-// the database is being restructured — for now every section renders
-// local sample content from src/lib/data.ts. when the new data layer
-// lands, swap these constants for real queries and delete the samples.
+// content lives in supabase (managed via /admin) — every query falls
+// back to the sample data in src/lib/data.ts until the tables exist
+export default async function Home() {
+  const [works, experience, skills, posts, testimonials, links] = await Promise.all([
+    getWorks(),
+    getExperience(),
+    getSkills(),
+    getPosts(),
+    getTestimonials(),
+    getLinks(),
+  ]);
 
-const works: WorkData[] = sampleWorks;
-const experience: ExperienceData[] = sampleExperience;
-const hardSkills: Skill[] = sampleHardSkills;
-const softSkills: Skill[] = sampleSoftSkills;
-const posts: BlogPostData[] = samplePosts;
-const testimonials: Testi[] = sampleTestimonials;
-const links: ContactLinkData[] = []; // contact falls back to real links in contact.tsx
-
-export default function Home() {
   return (
     <SmoothScroll>
       <PixelBackground />
@@ -43,7 +36,7 @@ export default function Home() {
         <main>
           <Hero />
           <About works={works} experience={experience} />
-          <Skills skills={hardSkills} softSkills={softSkills} />
+          <Skills skills={skills.hard} softSkills={skills.soft} />
           <Blog posts={posts} />
           <Testimony initial={testimonials} />
           <Contact links={links} />

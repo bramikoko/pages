@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GITHUB, INSTAGRAM, REDDIT, WHATSAPP, EMAIL, profile } from "@/src/lib/data";
 
 export type ContactLinkData = {
-  id: number;
+  id: number | string;
   platform: string;
   label: string;
   url: string;
