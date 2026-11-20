@@ -52,7 +52,7 @@ export default function AdminApp() {
 
   if (!session) {
     return (
-      <main className="admin">
+      <main className="admin admin-center">
         <form className="adm-login" onSubmit={login}>
           <p className="adm-logo">
             bram<span>.admin</span>

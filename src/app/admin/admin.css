@@ -25,10 +25,17 @@
   color: var(--ink-faint);
 }
 
-/* login */
+/* login — dead center of the viewport */
+.admin-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
 .adm-login {
   max-width: 340px;
-  margin: 18vh auto 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
