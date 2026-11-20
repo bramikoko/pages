@@ -21,8 +21,62 @@
   --ink-faint: #5c5c5c;
   --paper: #f2f2f2;
   --paper-ink: #0d0d0d;
+  --nav-bg: rgba(10, 10, 10, 0.92);
+  --hover-wash: rgba(255, 255, 255, 0.03);
+  --ascii-a: #f2f2f2;
+  --ascii-b: #bdbdbd;
+  --ascii-c: #3d3d3d;
+  --ascii-shadow: #1d1d1d;
   --mono: var(--font-mono), "jetbrains mono", monospace;
   --nf: "nerdmono", var(--mono);
+}
+
+/* ---- light theme ----
+   same grayscale family, flipped. the hero (home) and the os-style
+   drawers/windows keep the dark palette — see the dark-stay block below */
+[data-theme="light"] {
+  --bg: #f2f2f2;
+  --bg2: #e9e9e9;
+  --bg3: #dfdfdf;
+  --line: #c8c8c8;
+  --line2: #a8a8a8;
+  --ink: #141414;
+  --ink-dim: #4f4f4f;
+  --ink-faint: #8c8c8c;
+  --paper: #141414;
+  --paper-ink: #f2f2f2;
+  --nav-bg: rgba(242, 242, 242, 0.92);
+  --hover-wash: rgba(0, 0, 0, 0.05);
+  --ascii-a: #1d1d1d;
+  --ascii-b: #454545;
+  --ascii-c: #8f8f8f;
+  --ascii-shadow: #c4c4c4;
+}
+
+/* surfaces that stay dark in light mode: the hero (home) slab and the
+   os-style windows (my works / more about me / skill.info / blog.reader).
+   re-declaring the dark palette here means every child keeps its look */
+[data-theme="light"] .hero,
+[data-theme="light"] .drawer,
+[data-theme="light"] .win,
+[data-theme="light"] .project-pop {
+  --bg: #0a0a0a;
+  --bg2: #101010;
+  --bg3: #161616;
+  --line: #2b2b2b;
+  --line2: #3a3a3a;
+  --ink: #ededed;
+  --ink-dim: #9a9a9a;
+  --ink-faint: #5c5c5c;
+  --paper: #f2f2f2;
+  --paper-ink: #0d0d0d;
+  --hover-wash: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="light"] .hero {
+  /* the hero sits over the (now light) pixel canvas — give it a solid
+     dark slab so "home" reads as its own dark terminal block */
+  background: #0a0a0a;
 }
 
 * {
@@ -60,7 +114,36 @@ button {
   color: var(--bg);
 }
 
-/* nerd font icon */
+/* ---- theme circle reveal (view transitions api) ----
+   the switch button grows into a full-screen circle of the new theme */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: vt-reveal 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes vt-reveal {
+  from {
+    clip-path: circle(0px at var(--vx, 50%) var(--vy, 50%));
+  }
+  to {
+    clip-path: circle(142% at var(--vx, 50%) var(--vy, 50%));
+  }
+}
+
+/* fallback wipe for browsers without view transitions */
+.theme-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ---- nerd font icon ---- */
 .nf {
   font-family: var(--nf);
   font-style: normal;

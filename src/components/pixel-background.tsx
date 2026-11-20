@@ -30,7 +30,20 @@ export default function PixelBackground() {
     let cells: Cell[] = [];
     let parts: P[] = [];
 
-    const shades = ["#0d0d0d", "#121212", "#181818", "#1f1f1f", "#262626"];
+    // two palettes — the light one is picked per frame from the html
+    // data-theme attribute (nav dispatches "themechange" for reduced-motion)
+    const palettes = {
+      dark: {
+        bg: "#0a0a0a",
+        shades: ["#0d0d0d", "#121212", "#181818", "#1f1f1f", "#262626"],
+        dot: (a: number) => `rgba(237,237,237,${a})`,
+      },
+      light: {
+        bg: "#f2f2f2",
+        shades: ["#e9e9e9", "#e2e2e2", "#dadada", "#d0d0d0", "#c6c6c6"],
+        dot: (a: number) => `rgba(10,10,10,${a})`,
+      },
+    } as const;
 
     function build() {
       // dpr 1 on purpose: the field is chunky pixels anyway, and a full-screen
@@ -74,13 +87,16 @@ export default function PixelBackground() {
     }
 
     function draw() {
+      const pal =
+        document.documentElement.dataset.theme === "light" ? palettes.light : palettes.dark;
+
       // NOTE: the cell grid gets NO scroll parallax on purpose. a uniformly
       // random flickering field looks identical wherever it sits, so the old
       // `(scrollY * 0.05) % CELL` offset had exactly one visible effect: the
       // whole lit pattern teleported a cell-height every time the offset
       // wrapped — the "drops then snaps" stutter while scrolling.
 
-      ctx!.fillStyle = "#0a0a0a";
+      ctx!.fillStyle = pal.bg;
       ctx!.fillRect(0, 0, w, h);
 
       // flickering cells — fixed to the viewport
@@ -91,7 +107,7 @@ export default function PixelBackground() {
         }
         c.shade += Math.sign(c.target - c.shade);
         if (c.shade !== 0) {
-          ctx!.fillStyle = shades[c.shade];
+          ctx!.fillStyle = pal.shades[c.shade];
           ctx!.fillRect(c.x, c.y, CELL - 2, CELL - 2);
         }
       }
@@ -111,7 +127,7 @@ export default function PixelBackground() {
         if (p.x > w + 6) p.x = -6;
         let dy = (p.y - scrollY * p.par) % range;
         if (dy < -6) dy += range;
-        ctx!.fillStyle = `rgba(237,237,237,${p.a})`;
+        ctx!.fillStyle = pal.dot(p.a);
         ctx!.fillRect(Math.round(p.x), Math.round(dy), p.s, p.s);
       }
     }
@@ -132,6 +148,11 @@ export default function PixelBackground() {
       }
     };
 
+    // reduced-motion never runs the loop — repaint once on theme change
+    const onTheme = () => {
+      if (reduced) draw();
+    };
+
     build();
     if (reduced) {
       draw(); // static frame
@@ -145,12 +166,14 @@ export default function PixelBackground() {
     });
     ro.observe(document.documentElement);
     document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("themechange", onTheme);
 
     return () => {
       running = false;
       cancelAnimationFrame(raf);
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("themechange", onTheme);
     };
   }, []);
 

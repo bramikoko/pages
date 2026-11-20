@@ -21,7 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={mono.variable}>
-      <body>{children}</body>
+      <body>
+        {/* set the saved theme before first paint — no flash of the wrong theme */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}",
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

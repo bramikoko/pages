@@ -5,7 +5,7 @@
   left: 0;
   right: 0;
   z-index: 60;
-  background: rgba(10, 10, 10, 0.92);
+  background: var(--nav-bg);
   border-bottom: 1px solid var(--ink);
 }
 
@@ -88,7 +88,6 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0 1.4rem;
-  margin-left: auto;
   background: var(--ink);
   color: var(--bg);
   font-size: 0.75rem;
@@ -98,7 +97,6 @@
   box-shadow: inset 0 0 0 0 var(--bg);
   transition: box-shadow 0.22s steps(4), color 0.22s steps(4);
 }
-
 .nav-cta:hover {
   box-shadow: inset 0 -56px 0 0 var(--bg);
   color: var(--ink);
@@ -106,6 +104,193 @@
 
 .nav-cta .nf {
   font-size: 0.8rem;
+}
+
+/* ---- theme switch: a light-switch plate in the nav ----
+   rocker slides down = lights on (light theme), up = lights off (dark).
+   the theme itself swaps via a circle expanding from this button */
+.nav-switch {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  margin-left: auto;
+  border-left: 1px solid var(--line);
+}
+
+.theme-switch {
+  position: relative;
+  width: 30px;
+  height: 44px;
+  border: 1px solid var(--ink);
+  background: var(--bg2);
+  padding: 0;
+  overflow: hidden;
+}
+
+.theme-switch .rocker {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 4px;
+  height: 16px;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the physical flip — springy overshoot like a real switch */
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html[data-theme="light"] .theme-switch .rocker {
+  transform: translateY(20px);
+}
+
+.theme-switch .rocker .nf {
+  font-size: 0.62rem;
+  color: var(--paper-ink);
+}
+
+.theme-switch .screw {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--ink-faint);
+}
+
+.theme-switch .screw.t {
+  top: 3px;
+  left: 50%;
+  margin-left: -1.5px;
+}
+
+.theme-switch .screw.b {
+  bottom: 3px;
+  left: 50%;
+  margin-left: -1.5px;
+}
+
+/* ---- hamburger (mobile only) ---- */
+.nav-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  width: 56px;
+  align-self: stretch;
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--line);
+}
+
+.nav-burger .bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--ink);
+}
+
+/* ---- fullscreen mobile menu ---- */
+.m-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--bg);
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.m-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.m-menu-head .brand {
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.m-close {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 0;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 0;
+}
+
+.m-links {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1.5rem;
+  overflow-y: auto;
+}
+
+.m-link {
+  display: block;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  padding: 0.55rem 0;
+  text-align: left;
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  width: 100%;
+}
+
+.m-link-inner {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  font-weight: 800;
+  font-size: clamp(1.9rem, 8.5vw, 3.4rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.m-link-inner .idx {
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+}
+
+.m-link:active .m-link-inner,
+.m-link:hover .m-link-inner {
+  color: var(--ink-dim);
+}
+
+.m-foot {
+  padding: 1.1rem 1.5rem calc(1.1rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-dim);
+}
+
+.m-foot a {
+  color: var(--ink);
+  font-weight: 700;
 }
 
 /* ============ pixel canvas background ============ */
@@ -817,7 +1002,7 @@
 }
 
 .skill-card.soft:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--hover-wash);
 }
 
 /* skill modal — reuses the blog window chrome */
@@ -1501,7 +1686,7 @@ h2.h-display,
 .ascii-main {
   position: relative;
   z-index: 1;
-  background: linear-gradient(180deg, #f2f2f2 0%, #bdbdbd 45%, #3d3d3d 100%);
+  background: linear-gradient(180deg, var(--ascii-a) 0%, var(--ascii-b) 45%, var(--ascii-c) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -1510,7 +1695,7 @@ h2.h-display,
 .ascii-shadow {
   position: absolute;
   inset: 0;
-  color: #1d1d1d;
+  color: var(--ascii-shadow);
   z-index: 0;
   transform: translate(0.4em, 0.35em);
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -1651,6 +1836,14 @@ h2.h-display,
 
 /* ============ responsive ============ */
 @media (max-width: 900px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+
   .gh-card {
     position: static;
     margin-top: 3rem;
@@ -1689,10 +1882,6 @@ h2.h-display,
 }
 
 @media (max-width: 640px) {
-  .nav-links {
-    display: none;
-  }
-
   .skill-card.tall,
   .skill-card.short,
   .skill-card.mid {
