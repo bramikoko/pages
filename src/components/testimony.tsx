@@ -104,8 +104,12 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
     }
   };
 
-  // marquee rows need enough copies to loop seamlessly past any viewport
-  const row = [...list, ...list, ...list, ...list];
+  // the track loops by translating -50%, so it must be two identical
+  // halves and each half alone must be wider than any viewport — or a
+  // gap shows at the right edge when the list is short
+  const perHalf = Math.max(list.length, Math.ceil(2560 / 420));
+  const half = Array.from({ length: perHalf }, (_, i) => list[i % list.length]);
+  const row = [...half, ...half];
 
   const card = (t: Testi, key: string) => (
     <div className="testi-card" key={key}>
