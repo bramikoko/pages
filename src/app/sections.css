@@ -2015,6 +2015,28 @@ h2.h-display,
     padding: 2.5rem 0 1rem;
   }
 
+  /* footer stacks: copyright, full-width back-to-top, centered socials */
+  .footer-bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+
+  .footer-bottom > span {
+    order: 1;
+  }
+
+  .footer-bottom .to-top {
+    order: 2;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .footer-socials {
+    order: 3;
+    justify-content: center;
+  }
+
   /* contact breathes less on phones — the full-size version wastes
      the whole screen on padding */
   .contact {
