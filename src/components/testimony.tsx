@@ -129,15 +129,6 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
       {/* two endless card rivers running behind the form, opposite
           directions, fading out at both edges — clustered center-stage,
           exactly behind the form */}
-      {empty && (
-        <div className="container">
-          <div className="drawer-empty" data-reveal>
-            <p className="empty-title">no words yet</p>
-            <p className="small">be the first — your note will appear here once approved.</p>
-          </div>
-        </div>
-      )}
-
       {!empty && (
         <div className="t-backdrop" ref={backdropRef} aria-hidden="true">
           <div className="t-marquee">
@@ -156,10 +147,6 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
         <h2 className="h-display" style={{ fontSize: "clamp(2rem, 5vw, 3.6rem)" }} data-reveal>
           words from <span className="outline">others</span>
         </h2>
-        <p className="sec-sub" data-reveal>
-          real words from people i&rsquo;ve built with — the river behind this form is
-          the approved ones. add yours below.
-        </p>
 
         <form className="testi-form" ref={formRef} onSubmit={submit}>
           <h3>worked with me?</h3>
