@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, supabaseEnvReady } from "@/lib/supabase/client";
 
 export type Testi = {
   id: string;
@@ -89,6 +89,10 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
       approved: false,
     };
     if (!payload.name || !payload.message) return;
+    if (!supabaseEnvReady) {
+      setStatus({ kind: "err", msg: "// form offline — the backend isn't wired yet." });
+      return;
+    }
     setSending(true);
     try {
       const supabase = createClient();

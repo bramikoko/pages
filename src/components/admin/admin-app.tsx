@@ -6,12 +6,14 @@
 
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, supabaseEnvReady } from "@/lib/supabase/client";
 import { SECTIONS } from "./config";
 import AdminTable from "./admin-table";
 
 export default function AdminApp() {
-  const supabase = createClient();
+  // null when the supabase env vars are missing (e.g. a netlify build
+  // without secrets) — the dashboard renders a notice instead of crashing
+  const supabase = supabaseEnvReady ? createClient() : null;
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,6 +23,10 @@ export default function AdminApp() {
   const [tab, setTab] = useState(SECTIONS[0].key);
 
   useEffect(() => {
+    if (!supabase) {
+      setReady(true);
+      return;
+    }
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setReady(true);
@@ -31,6 +37,7 @@ export default function AdminApp() {
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) return;
     setBusy(true);
     setErr("");
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -39,8 +46,18 @@ export default function AdminApp() {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    await supabase?.auth.signOut();
   };
+
+  if (!supabase) {
+    return (
+      <main className="admin">
+        <div className="admin-center">
+          <p className="adm-loading">// supabase env not configured — add the keys to the host</p>
+        </div>
+      </main>
+    );
+  }
 
   if (!ready) {
     return (
