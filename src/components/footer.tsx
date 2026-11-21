@@ -2,13 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ContactLinkData } from "@/src/components/contact";
-import {
-  GITHUB,
-  INSTAGRAM,
-  REDDIT,
-  WHATSAPP,
-  EMAIL,
-} from "@/src/lib/data";
 
 type GameState = "idle" | "run" | "over";
 
@@ -278,19 +271,11 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
     tiktok: "\ue07b",
     discord: "\uf392",
   };
-  const socials = dbLinks.length
-    ? dbLinks.map((l) => ({
-        href: l.url,
-        icon: ICONS[l.platform] ?? "\uf02d",
-        label: l.platform,
-      }))
-    : [
-        { href: GITHUB, icon: "\uf09b", label: "github" },
-        { href: INSTAGRAM, icon: "\uf16d", label: "instagram" },
-        { href: REDDIT, icon: "\uf1a1", label: "reddit" },
-        { href: WHATSAPP, icon: "\uf232", label: "whatsapp" },
-        { href: `mailto:${EMAIL}`, icon: "\uf0e0", label: "mail" },
-      ];
+  const socials = dbLinks.map((l) => ({
+    href: l.url,
+    icon: ICONS[l.platform] ?? "\uf02d",
+    label: l.platform,
+  }));
 
   return (
     <footer className="footer">

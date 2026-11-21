@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { GITHUB, INSTAGRAM, REDDIT, WHATSAPP, EMAIL, LINKEDIN, profile } from "@/src/lib/data";
 
 export type ContactLinkData = {
   id: number | string;
@@ -27,66 +26,20 @@ const META: Record<string, { icon: string; note: string; external: boolean }> = 
   discord: { icon: "\uf392", note: "the fastest chat", external: true },
 };
 
-// fallback when the db has no links yet — real contact info, never blank
-const LINKS = [
-  {
-    href: GITHUB,
-    icon: "\uf09b",
-    label: `github.com/${profile.handle}`,
-    note: "code, issues, and commit history",
-    external: true,
-  },
-  {
-    href: `mailto:${EMAIL}`,
-    icon: "\uf0e0",
-    label: EMAIL,
-    note: "the fastest way to reach me",
-    external: false,
-  },
-  {
-    href: WHATSAPP,
-    icon: "\uf232",
-    label: "+62 857-0563-7498",
-    note: "whatsapp — say who you are first",
-    external: true,
-  },
-  {
-    href: INSTAGRAM,
-    icon: "\uf16d",
-    label: `instagram.com/${profile.handle}`,
-    note: "behind the screen",
-    external: true,
-  },
-  {
-    href: REDDIT,
-    icon: "\uf1a1",
-    label: `reddit.com/u/${profile.handle}`,
-    note: "lurking, mostly",
-    external: true,
-  },
-  {
-    href: LINKEDIN,
-    icon: "\uf0e1",
-    label: `linkedin.com/in/${profile.handle}`,
-    note: "the serious one — recruiters welcome",
-    external: true,
-  },
-];
 
 export default function Contact({
   links: dbLinks = [],
 }: {
   links?: ContactLinkData[];
 }) {
-  const resolved = dbLinks.length
-    ? dbLinks.map((l) => ({
-        href: l.url,
-        icon: META[l.platform]?.icon ?? "\uf02d",
-        label: l.label,
-        note: META[l.platform]?.note ?? "",
-        external: META[l.platform]?.external ?? true,
-      }))
-    : LINKS;
+  // the database is the only source — no rows, no links
+  const resolved = dbLinks.map((l) => ({
+    href: l.url,
+    icon: META[l.platform]?.icon ?? "\uf02d",
+    label: l.label,
+    note: META[l.platform]?.note ?? "",
+    external: META[l.platform]?.external ?? true,
+  }));
 
   const root = useRef<HTMLElement>(null);
 
