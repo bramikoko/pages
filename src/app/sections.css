@@ -1613,6 +1613,24 @@ h2.h-display,
   border-top: 1px solid var(--line);
 }
 
+/* shown when the database has no links yet */
+.contact-empty {
+  border-bottom: 1px solid var(--line);
+  padding: 1.6rem 1rem;
+}
+
+.contact-empty p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--ink-faint);
+}
+
+.contact-empty .nf {
+  margin-right: 0.4rem;
+  color: var(--ink-dim);
+}
+
 .contact-link {
   position: relative;
   display: flex;

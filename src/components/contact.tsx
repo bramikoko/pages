@@ -105,6 +105,14 @@ export default function Contact({
               <span className="small">{l.note}</span>
             </a>
           ))}
+          {resolved.length === 0 && (
+            <div className="contact-empty">
+              <p>
+                <span className="nf" aria-hidden="true">&#xf071;</span> no links wired yet —
+                the wall is still being built. in the meantime, any search engine can find me.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </section>
