@@ -297,8 +297,10 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
       <div className="container">
         <div className="footer-bottom">
           <span>© {year} bram — no rights reserved, just pixels</span>
-          {/* contact row — socials left of the back-to-top button */}
-          <div className="footer-socials">
+          {/* contact row — socials + back-to-top grouped on the right
+              (desktop); on mobile they split into stacked rows */}
+          <div className="footer-right">
+            <div className="footer-socials">
             {socials.map((s) => (
               <a
                 key={s.label}
@@ -314,16 +316,17 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
                 </span>
               </a>
             ))}
+            </div>
+            <button
+              className="btn to-top"
+              type="button"
+              onClick={toTop}
+              style={{ padding: "0.5rem 0.9rem", fontSize: "0.68rem" }}
+            >
+              <span className="nf" aria-hidden="true">&#xf062;</span>
+              <span>back to top</span>
+            </button>
           </div>
-          <button
-            className="btn to-top"
-            type="button"
-            onClick={toTop}
-            style={{ padding: "0.5rem 0.9rem", fontSize: "0.68rem" }}
-          >
-            <span className="nf" aria-hidden="true">&#xf062;</span>
-            <span>back to top</span>
-          </button>
         </div>
       </div>
 

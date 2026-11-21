@@ -1725,6 +1725,13 @@ h2.h-display,
   gap: 0.6rem;
 }
 
+/* socials + back-to-top ride together on the right (desktop) */
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .social-btn {
   display: flex;
   align-items: center;
@@ -2015,7 +2022,9 @@ h2.h-display,
     padding: 2.5rem 0 1rem;
   }
 
-  /* footer stacks: copyright, full-width back-to-top, centered socials */
+  /* footer stacks: copyright, full-width back-to-top, centered socials.
+     display: contents dissolves the desktop grouping so the three
+     pieces can be ordered independently */
   .footer-bottom {
     flex-direction: column;
     align-items: stretch;
@@ -2026,13 +2035,17 @@ h2.h-display,
     order: 1;
   }
 
-  .footer-bottom .to-top {
+  .footer-right {
+    display: contents;
+  }
+
+  .footer-right .to-top {
     order: 2;
     width: 100%;
     justify-content: center;
   }
 
-  .footer-socials {
+  .footer-right .footer-socials {
     order: 3;
     justify-content: center;
   }
