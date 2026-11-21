@@ -1,17 +1,10 @@
 // server-side reads from supabase (rest, anon key, cached 60s).
-// every query falls back to the sample data in src/lib/data.ts when the
-// env vars are missing, the table doesn't exist yet, or the request
-// fails — the public site must never break because of the database.
+// no hardcoded content anywhere: if the env vars are missing, the
+// table doesn't exist yet, or the request fails, every query returns
+// an empty list and the ui renders its empty states. the database is
+// the single source of truth — manage content via /admin.
 
 import type { Project, Skill, Experience, BlogPost } from "./data";
-import {
-  sampleWorks,
-  sampleExperience,
-  sampleHardSkills,
-  sampleSoftSkills,
-  samplePosts,
-  sampleTestimonials,
-} from "./data";
 import type { ContactLinkData } from "@/src/components/contact";
 import type { Testi } from "@/src/components/testimony";
 
@@ -38,7 +31,7 @@ const n = (v: unknown, fb = 0) => (typeof v === "number" ? v : fb);
 
 export async function getWorks(): Promise<WorkRow[]> {
   const rows = await rest<Row>("works");
-  if (!rows?.length) return sampleWorks;
+  if (!rows?.length) return [];
   return rows.map((r, i) => ({
     id: i + 1,
     title: s(r.title),
@@ -53,7 +46,7 @@ export async function getWorks(): Promise<WorkRow[]> {
 
 export async function getExperience(): Promise<ExpRow[]> {
   const rows = await rest<Row>("experience");
-  if (!rows?.length) return sampleExperience;
+  if (!rows?.length) return [];
   return rows.map((r, i) => ({
     id: i + 1,
     period: s(r.period),
@@ -67,7 +60,7 @@ export async function getExperience(): Promise<ExpRow[]> {
 
 export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
   const rows = await rest<Row>("skills");
-  if (!rows?.length) return { hard: sampleHardSkills, soft: sampleSoftSkills };
+  if (!rows?.length) return { hard: [], soft: [] };
   const map = (r: Row): Skill => ({
     name: s(r.name),
     pct: n(r.pct),
@@ -82,7 +75,7 @@ export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
 
 export async function getPosts(): Promise<BlogPost[]> {
   const rows = await rest<Row>("posts");
-  if (!rows?.length) return samplePosts;
+  if (!rows?.length) return [];
   return rows.map((r) => ({
     id: s(r.id),
     date: s(r.date),
@@ -98,7 +91,7 @@ export async function getPosts(): Promise<BlogPost[]> {
 
 export async function getTestimonials(): Promise<Testi[]> {
   const rows = await rest<Row>("testimonials");
-  if (!rows?.length) return sampleTestimonials;
+  if (!rows?.length) return [];
   return rows
     .filter((r) => r.approved === true)
     .map((r, i) => ({
