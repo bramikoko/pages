@@ -106,11 +106,9 @@ export default function Contact({
             </a>
           ))}
           {resolved.length === 0 && (
-            <div className="contact-empty">
-              <p>
-                <span className="nf" aria-hidden="true">&#xf071;</span> no links wired yet —
-                the wall is still being built. in the meantime, any search engine can find me.
-              </p>
+            <div className="drawer-empty contact-empty">
+              <p className="empty-title">no links wired yet</p>
+              <p className="small">the wall is still being built — check back soon.</p>
             </div>
           )}
         </div>

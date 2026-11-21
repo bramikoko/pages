@@ -16,8 +16,9 @@ export type WorkData = WorkRow;
 export type ExperienceData = ExpRow;
 export type BlogPostData = BlogPost;
 
-// content lives in supabase (managed via /admin) — every query falls
-// back to the sample data in src/lib/data.ts until the tables exist
+// content lives in supabase (managed via /admin) — the page is cached
+// for a minute and re-busted on demand by /api/revalidate whenever the
+// admin saves
 export default async function Home() {
   const [works, experience, skills, posts, testimonials, links] = await Promise.all([
     getWorks(),

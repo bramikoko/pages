@@ -1,3 +1,7 @@
+"use cache";
+
+import { cacheTag } from "next/cache";
+
 // server-side reads from supabase (rest, anon key, cached 60s).
 // no hardcoded content anywhere: if the env vars are missing, the
 // table doesn't exist yet, or the request fails, every query returns
@@ -16,7 +20,6 @@ async function rest<T>(table: string, order = "sort"): Promise<T[] | null> {
   try {
     const r = await fetch(`${URL}/rest/v1/${table}?select=*&order=${order}.asc`, {
       headers: { apikey: KEY, Authorization: `Bearer ${KEY}` },
-      next: { revalidate: 60 },
     });
     if (!r.ok) return null;
     return (await r.json()) as T[];
@@ -30,6 +33,7 @@ const s = (v: unknown, fb = "") => (typeof v === "string" ? v : fb);
 const n = (v: unknown, fb = 0) => (typeof v === "number" ? v : fb);
 
 export async function getWorks(): Promise<WorkRow[]> {
+  cacheTag("content");
   const rows = await rest<Row>("works");
   if (!rows?.length) return [];
   return rows.map((r, i) => ({
@@ -45,6 +49,7 @@ export async function getWorks(): Promise<WorkRow[]> {
 }
 
 export async function getExperience(): Promise<ExpRow[]> {
+  cacheTag("content");
   const rows = await rest<Row>("experience");
   if (!rows?.length) return [];
   return rows.map((r, i) => ({
@@ -74,6 +79,7 @@ export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
 }
 
 export async function getPosts(): Promise<BlogPost[]> {
+  cacheTag("content");
   const rows = await rest<Row>("posts");
   if (!rows?.length) return [];
   return rows.map((r) => ({
@@ -90,7 +96,8 @@ export async function getPosts(): Promise<BlogPost[]> {
 }
 
 export async function getTestimonials(): Promise<Testi[]> {
-  const rows = await rest<Row>("testimonials");
+  cacheTag("content");
+  const rows = await rest<Row>("testimonials", "created_at");
   if (!rows?.length) return [];
   return rows
     .filter((r) => r.approved === true)
@@ -104,6 +111,7 @@ export async function getTestimonials(): Promise<Testi[]> {
 }
 
 export async function getLinks(): Promise<ContactLinkData[]> {
+  cacheTag("content");
   const rows = await rest<Row>("contact_links");
   if (!rows) return [];
   return rows.map((r) => ({

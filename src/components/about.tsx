@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { EMAIL, GITHUB, type Project, type Experience } from "@/src/lib/data";
+import { EMAIL, type Project, type Experience } from "@/src/lib/data";
 import type { WorkData, ExperienceData } from "@/src/app/page";
 type WorkItem = WorkData;
 
@@ -293,13 +293,6 @@ export default function About({
               </p>
             </button>
           ))}
-          <a className="wcard" href={GITHUB} target="_blank" rel="noreferrer">
-            <div className="wcard-top">
-              <span className="wcard-title">github</span>
-              <span className="wcard-year">@bramikoko</span>
-            </div>
-            <p className="wcard-desc">the live feed of what i am building right now.</p>
-          </a>
           {/* closing note sits at the very end of the scroll */}
           <div className="drawer-end px-dots-dark">
             <p className="big-ask">say hi anytime</p>

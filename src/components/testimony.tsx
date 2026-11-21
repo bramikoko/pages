@@ -126,9 +126,12 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
           directions, fading out at both edges — clustered center-stage,
           exactly behind the form */}
       {empty && (
-        <p className="sec-sub" data-reveal>
-          no words yet — be the first. your note will appear here once approved.
-        </p>
+        <div className="container">
+          <div className="drawer-empty" data-reveal>
+            <p className="empty-title">no words yet</p>
+            <p className="small">be the first — your note will appear here once approved.</p>
+          </div>
+        </div>
       )}
 
       {!empty && (

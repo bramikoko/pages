@@ -9,6 +9,12 @@ import type { SectionCfg, FieldDef } from "./config";
 
 type Row = Record<string, unknown>;
 
+// tell the public site to drop its cache and re-read the database —
+// changes made here show up on "/" within a second or two
+const revalidateSite = () => {
+  fetch("/api/revalidate", { method: "POST" }).catch(() => {});
+};
+
 export default function AdminTable({
   cfg,
   supabase,
@@ -61,6 +67,7 @@ export default function AdminTable({
     setEditing(null);
     setIsNew(false);
     load();
+    revalidateSite();
   };
 
   const remove = async (id: unknown) => {
@@ -74,6 +81,7 @@ export default function AdminTable({
     }
     setEditing(null);
     load();
+    revalidateSite();
   };
 
   const field = (f: FieldDef) => {
