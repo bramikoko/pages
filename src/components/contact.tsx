@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { GITHUB, INSTAGRAM, REDDIT, WHATSAPP, EMAIL, profile } from "@/src/lib/data";
+import { GITHUB, INSTAGRAM, REDDIT, WHATSAPP, EMAIL, LINKEDIN, profile } from "@/src/lib/data";
 
 export type ContactLinkData = {
   id: number | string;
@@ -20,6 +20,11 @@ const META: Record<string, { icon: string; note: string; external: boolean }> = 
   whatsapp: { icon: "\uf232", note: "whatsapp — say who you are first", external: true },
   instagram: { icon: "\uf16d", note: "behind the screen", external: true },
   reddit: { icon: "\uf1a1", note: "lurking, mostly", external: true },
+  linkedin: { icon: "\uf0e1", note: "the serious one — recruiters welcome", external: true },
+  x: { icon: "\ue61b", note: "thoughts in short bursts", external: true },
+  youtube: { icon: "\uf167", note: "watch me build, occasionally", external: true },
+  tiktok: { icon: "\ue07b", note: "quick dev clips", external: true },
+  discord: { icon: "\uf392", note: "the fastest chat", external: true },
 };
 
 // fallback when the db has no links yet — real contact info, never blank
@@ -57,6 +62,13 @@ const LINKS = [
     icon: "\uf1a1",
     label: `reddit.com/u/${profile.handle}`,
     note: "lurking, mostly",
+    external: true,
+  },
+  {
+    href: LINKEDIN,
+    icon: "\uf0e1",
+    label: `linkedin.com/in/${profile.handle}`,
+    note: "the serious one — recruiters welcome",
     external: true,
   },
 ];

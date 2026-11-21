@@ -6,6 +6,7 @@ export const GITHUB = "https://github.com/bramikoko";
 export const EMAIL = "punyaibra@gmail.com";
 export const INSTAGRAM = "https://instagram.com/bramikoko";
 export const REDDIT = "https://reddit.com/user/bramikoko";
+export const LINKEDIN = "https://linkedin.com/in/bramikoko";
 export const WHATSAPP = "https://wa.me/6285705637498";
 
 export const profile = {

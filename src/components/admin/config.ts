@@ -115,7 +115,7 @@ export const SECTIONS: SectionCfg[] = [
         key: "platform",
         label: "platform",
         type: "select",
-        options: ["github", "email", "whatsapp", "instagram", "reddit"],
+        options: ["github", "email", "whatsapp", "instagram", "reddit", "linkedin", "x", "youtube", "tiktok", "discord"],
         hint: "picks the icon + note shown on the site",
       },
       { key: "label", label: "label", type: "text", placeholder: "github" },

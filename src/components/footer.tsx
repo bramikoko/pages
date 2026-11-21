@@ -272,6 +272,11 @@ export default function Footer({ links: dbLinks = [] }: { links?: ContactLinkDat
     reddit: "\uf1a1",
     whatsapp: "\uf232",
     email: "\uf0e0",
+    linkedin: "\uf0e1",
+    x: "\ue61b",
+    youtube: "\uf167",
+    tiktok: "\ue07b",
+    discord: "\uf392",
   };
   const socials = dbLinks.length
     ? dbLinks.map((l) => ({
