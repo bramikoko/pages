@@ -67,7 +67,7 @@ export const SECTIONS: SectionCfg[] = [
     fields: [
       { key: "name", label: "name", type: "text", placeholder: "typescript" },
       { key: "pct", label: "percent", type: "num", hint: "0 — 100" },
-      { key: "icon", label: "icon", type: "text", hint: "nerd font glyph, e.g. \ue795" },
+      { key: "icon", label: "icon", type: "text", hint: "simple-icons slug from simpleicons.org — e.g. react, nextdotjs, typescript" },
       { key: "description", label: "desc", type: "area" },
       { key: "kind", label: "kind", type: "select", options: ["hard", "soft"] },
       { key: "sort", label: "order", type: "num" },

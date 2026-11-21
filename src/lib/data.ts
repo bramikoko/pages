@@ -152,21 +152,21 @@ export const sampleExperience: (Experience & { id: number })[] = [
 ];
 
 export const sampleHardSkills: Skill[] = [
-  { name: "typescript", pct: 92, icon: "\ue628", desc: "the default language for everything i touch — strict mode, no excuses." },
-  { name: "react / next", pct: 90, icon: "\ue7ba", desc: "components, server components, and the mental model that holds them together." },
-  { name: "node / bun", pct: 84, icon: "\ue719", desc: "apis, scripts, and small services. bun for speed, node for boring reliability." },
-  { name: "css / gsap", pct: 88, icon: "\uf121", desc: "layout is the easy part — motion is where the real hours go." },
-  { name: "prisma / sql", pct: 80, icon: "\uf1c0", desc: "schema design, migrations, and queries that don't fight the database." },
-  { name: "vue", pct: 72, icon: "\uf843", desc: "enough to be dangerous — used it for a couple of client dashboards." },
-  { name: "git / ci", pct: 86, icon: "\ue702", desc: "branch discipline, rebase fluency, pipelines that catch me when i'm sloppy." },
-  { name: "linux", pct: 78, icon: "\uf17c", desc: "daily driver. dotfiles versioned, shell history embarrassing." },
+  { name: "typescript", pct: 92, icon: "typescript", desc: "the default language for everything i touch — strict mode, no excuses." },
+  { name: "react / next", pct: 90, icon: "react", desc: "components, server components, and the mental model that holds them together." },
+  { name: "node / bun", pct: 84, icon: "nodedotjs", desc: "apis, scripts, and small services. bun for speed, node for boring reliability." },
+  { name: "css / gsap", pct: 88, icon: "css", desc: "layout is the easy part — motion is where the real hours go." },
+  { name: "prisma / sql", pct: 80, icon: "prisma", desc: "schema design, migrations, and queries that don't fight the database." },
+  { name: "vue", pct: 72, icon: "vuedotjs", desc: "enough to be dangerous — used it for a couple of client dashboards." },
+  { name: "git / ci", pct: 86, icon: "git", desc: "branch discipline, rebase fluency, pipelines that catch me when i'm sloppy." },
+  { name: "linux", pct: 78, icon: "linux", desc: "daily driver. dotfiles versioned, shell history embarrassing." },
 ];
 
 export const sampleSoftSkills: Skill[] = [
-  { name: "problem solving", pct: 90, icon: "\uf0eb", desc: "i read error messages. all of them. it's a superpower apparently." },
-  { name: "communication", pct: 82, icon: "\uf086", desc: "translating between what a client said and what they actually meant." },
-  { name: "teamwork", pct: 85, icon: "\uf0c0", desc: "small teams, honest code review, no ego in the diff comments." },
-  { name: "adaptability", pct: 80, icon: "\uf074", desc: "new stack, new constraint, new requirement mid-sprint — fine." },
+  { name: "problem solving", pct: 90, icon: "", desc: "i read error messages. all of them. it's a superpower apparently." },
+  { name: "communication", pct: 82, icon: "", desc: "translating between what a client said and what they actually meant." },
+  { name: "teamwork", pct: 85, icon: "", desc: "small teams, honest code review, no ego in the diff comments." },
+  { name: "adaptability", pct: 80, icon: "", desc: "new stack, new constraint, new requirement mid-sprint — fine." },
   { name: "curiosity", pct: 95, icon: "\uf128", desc: "the reason this page exists. also the reason i sleep late." },
 ];
 

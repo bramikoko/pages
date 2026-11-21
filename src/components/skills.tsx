@@ -302,9 +302,7 @@ export default function Skills({
       className={`skill-card ${soft ? "soft" : ["tall", "short", "mid"][i % 3]}`}
       onClick={() => openSkill(s, soft)}
     >
-      <span className="skill-icon nf" aria-hidden="true">
-        {s.icon}
-      </span>
+      <SkillIcon icon={s.icon} name={s.name} />
       <div className="skill-name">{s.name}</div>
       <div className="skill-pct">{s.pct}%</div>
       <div className="skill-bar">
@@ -321,6 +319,36 @@ export default function Skills({
   );
 
   const level = (pct: number) => (pct >= 90 ? "advanced" : pct >= 75 ? "solid" : "growing");
+
+  // icons come from two sources: nerd font glyphs (legacy rows) or
+  // simple-icons slugs ("react", "nextdotjs" — see simpleicons.org).
+  // slugs render as a css mask so the glyph follows the theme color;
+  // no icon at all falls back to the skill's first letter
+  const NF_RE = /[\uE000-\uF8FF]/;
+  const SkillIcon = ({ icon, name, big = false }: { icon: string; name: string; big?: boolean }) => {
+    if (icon && !NF_RE.test(icon)) {
+      const slug = encodeURIComponent(icon.trim().toLowerCase());
+      return (
+        <span
+      className={big ? "skill-win-icon skill-ic" : "skill-icon skill-ic"}
+          aria-hidden="true"
+          style={{ "--icon": `url("https://api.iconify.design/simple-icons/${slug}.svg")` } as React.CSSProperties}
+        />
+      );
+    }
+    if (icon) {
+      return (
+        <span className={big ? "skill-win-icon nf" : "skill-icon nf"} aria-hidden="true">
+          {icon}
+        </span>
+      );
+    }
+    return (
+      <span className={big ? "skill-win-icon nf" : "skill-icon nf"} aria-hidden="true">
+        {name.trim()[0]?.toLowerCase() ?? "?"}
+      </span>
+    );
+  };
 
   const toggleSkm = useCallback((key: string) => {
     setOpen((prev) => {
@@ -341,9 +369,7 @@ export default function Skills({
           aria-expanded={isOpen}
           onClick={() => toggleSkm(key)}
         >
-          <span className="skill-icon nf" aria-hidden="true">
-            {s.icon}
-          </span>
+          <SkillIcon icon={s.icon} name={s.name} />
           <span className="skm-name">{s.name}</span>
           <span className="skm-pct">{s.pct}%</span>
           <span className="skm-chev nf" aria-hidden="true">
@@ -477,9 +503,7 @@ export default function Skills({
           {active && (
             <>
               <div className="skill-win-head">
-                <span className="skill-win-icon nf" aria-hidden="true">
-                  {active.s.icon}
-                </span>
+                <SkillIcon icon={active.s.icon} name={active.s.name} big />
                 <div>
                   <h3 className="skill-win-name">{active.s.name}</h3>
                   <p className="skill-win-meta">

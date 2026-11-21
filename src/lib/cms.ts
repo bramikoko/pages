@@ -38,7 +38,7 @@ const n = (v: unknown, fb = 0) => (typeof v === "number" ? v : fb);
 
 export async function getWorks(): Promise<WorkRow[]> {
   const rows = await rest<Row>("works");
-  if (!rows) return sampleWorks;
+  if (!rows?.length) return sampleWorks;
   return rows.map((r, i) => ({
     id: i + 1,
     title: s(r.title),
@@ -53,7 +53,7 @@ export async function getWorks(): Promise<WorkRow[]> {
 
 export async function getExperience(): Promise<ExpRow[]> {
   const rows = await rest<Row>("experience");
-  if (!rows) return sampleExperience;
+  if (!rows?.length) return sampleExperience;
   return rows.map((r, i) => ({
     id: i + 1,
     period: s(r.period),
@@ -67,7 +67,7 @@ export async function getExperience(): Promise<ExpRow[]> {
 
 export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
   const rows = await rest<Row>("skills");
-  if (!rows) return { hard: sampleHardSkills, soft: sampleSoftSkills };
+  if (!rows?.length) return { hard: sampleHardSkills, soft: sampleSoftSkills };
   const map = (r: Row): Skill => ({
     name: s(r.name),
     pct: n(r.pct),
@@ -82,7 +82,7 @@ export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
 
 export async function getPosts(): Promise<BlogPost[]> {
   const rows = await rest<Row>("posts");
-  if (!rows) return samplePosts;
+  if (!rows?.length) return samplePosts;
   return rows.map((r) => ({
     id: s(r.id),
     date: s(r.date),
@@ -98,7 +98,7 @@ export async function getPosts(): Promise<BlogPost[]> {
 
 export async function getTestimonials(): Promise<Testi[]> {
   const rows = await rest<Row>("testimonials");
-  if (!rows) return sampleTestimonials;
+  if (!rows?.length) return sampleTestimonials;
   return rows
     .filter((r) => r.approved === true)
     .map((r, i) => ({

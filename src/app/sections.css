@@ -1139,6 +1139,16 @@ html[data-theme="light"] .theme-switch .rocker {
   color: var(--ink-dim);
 }
 
+/* simple-icons slug rendered as a mask — currentColor keeps it on-theme */
+.skill-ic {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
+}
+
 .skill-name {
   font-weight: 700;
   font-size: 0.95rem;
