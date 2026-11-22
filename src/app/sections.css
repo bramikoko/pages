@@ -2106,6 +2106,11 @@ html:not([data-theme="light"]) .dino-wrap canvas {
     justify-content: center;
   }
 
+  /* dino game overlay buttons lifted on mobile to clear bottom edge */
+  .dino-overlay {
+    padding-bottom: 3.5rem;
+  }
+
   /* contact breathes less on phones — the full-size version wastes
      the whole screen on padding */
   .contact {

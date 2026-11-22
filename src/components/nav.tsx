@@ -15,7 +15,12 @@ export default function Nav() {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
-    setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
+    const active = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+    setTheme(active);
+    const favicon = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+    if (favicon) {
+      favicon.href = active === "light" ? "/icon-light.svg" : "/icon-dark.svg";
+    }
   }, []);
 
   const applyTheme = (next: "dark" | "light") => {
@@ -26,6 +31,10 @@ export default function Nav() {
       /* private mode — fine */
     }
     setTheme(next);
+    const favicon = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+    if (favicon) {
+      favicon.href = next === "light" ? "/icon-light.svg" : "/icon-dark.svg";
+    }
     // pixel background listens for this to repaint its palette
     window.dispatchEvent(new Event("themechange"));
   };
