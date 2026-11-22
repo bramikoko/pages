@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { heroHookLines, heroDesc, profile, GITHUB } from "@/src/lib/data";
@@ -331,8 +332,14 @@ export default function Hero() {
         ref={cardRef}
         aria-label={`github profile: ${gh.handle}`}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={gh.avatar} alt="" draggable={false} />
+        <Image
+          src={gh.avatar}
+          alt={`github profile: ${gh.handle}`}
+          width={320}
+          height={320}
+          draggable={false}
+          priority
+        />
         <div className="gh-info">
           <div className="gh-card-name">{gh.name}</div>
           <div className="gh-card-role">@{gh.handle} — {gh.bio}</div>

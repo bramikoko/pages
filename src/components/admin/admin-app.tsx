@@ -53,7 +53,7 @@ export default function AdminApp() {
     return (
       <main className="admin">
         <div className="admin-center">
-          <p className="adm-loading">// supabase env not configured — add the keys to the host</p>
+          <p className="adm-loading">{"// supabase env not configured — add the keys to the host"}</p>
         </div>
       </main>
     );
@@ -62,7 +62,7 @@ export default function AdminApp() {
   if (!ready) {
     return (
       <main className="admin">
-        <p className="adm-loading">// connecting...</p>
+        <p className="adm-loading">{"// connecting..."}</p>
       </main>
     );
   }

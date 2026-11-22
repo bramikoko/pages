@@ -8,13 +8,16 @@ import Blog from "@/src/components/blog";
 import Testimony from "@/src/components/testimony";
 import Contact from "@/src/components/contact";
 import Footer from "@/src/components/footer";
-import type { Skill, BlogPost } from "@/src/lib/data";
+import type { BlogPost } from "@/src/lib/data";
 import { getWorks, getExperience, getSkills, getPosts, getTestimonials, getLinks } from "@/src/lib/cms";
 import type { WorkRow, ExpRow } from "@/src/lib/cms";
 
 export type WorkData = WorkRow;
 export type ExperienceData = ExpRow;
 export type BlogPostData = BlogPost;
+
+// allow blocking route navigation so URL data outside Suspense does not trigger instant-shell-url-data warnings
+export const instant = false;
 
 // content lives in supabase (managed via /admin) — the page is cached
 // for a minute and re-busted on demand by /api/revalidate whenever the

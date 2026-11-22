@@ -1,6 +1,6 @@
 "use cache";
 
-import { cacheTag } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 // server-side reads from supabase (rest, anon key, cached 60s).
 // no hardcoded content anywhere: if the env vars are missing, the
@@ -20,6 +20,7 @@ async function rest<T>(table: string, order = "sort"): Promise<T[] | null> {
   try {
     const r = await fetch(`${URL}/rest/v1/${table}?select=*&order=${order}.asc`, {
       headers: { apikey: KEY, Authorization: `Bearer ${KEY}` },
+      next: { tags: ["content"], revalidate: 60 },
     });
     if (!r.ok) return null;
     return (await r.json()) as T[];
@@ -33,6 +34,7 @@ const s = (v: unknown, fb = "") => (typeof v === "string" ? v : fb);
 const n = (v: unknown, fb = 0) => (typeof v === "number" ? v : fb);
 
 export async function getWorks(): Promise<WorkRow[]> {
+  cacheLife("content");
   cacheTag("content");
   const rows = await rest<Row>("works");
   if (!rows?.length) return [];
@@ -49,6 +51,7 @@ export async function getWorks(): Promise<WorkRow[]> {
 }
 
 export async function getExperience(): Promise<ExpRow[]> {
+  cacheLife("content");
   cacheTag("content");
   const rows = await rest<Row>("experience");
   if (!rows?.length) return [];
@@ -64,6 +67,8 @@ export async function getExperience(): Promise<ExpRow[]> {
 }
 
 export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
+  cacheLife("content");
+  cacheTag("content");
   const rows = await rest<Row>("skills");
   if (!rows?.length) return { hard: [], soft: [] };
   const map = (r: Row): Skill => ({
@@ -79,6 +84,7 @@ export async function getSkills(): Promise<{ hard: Skill[]; soft: Skill[] }> {
 }
 
 export async function getPosts(): Promise<BlogPost[]> {
+  cacheLife("content");
   cacheTag("content");
   const rows = await rest<Row>("posts");
   if (!rows?.length) return [];
@@ -96,6 +102,7 @@ export async function getPosts(): Promise<BlogPost[]> {
 }
 
 export async function getTestimonials(): Promise<Testi[]> {
+  cacheLife("content");
   cacheTag("content");
   const rows = await rest<Row>("testimonials", "created_at");
   if (!rows?.length) return [];
@@ -111,6 +118,7 @@ export async function getTestimonials(): Promise<Testi[]> {
 }
 
 export async function getLinks(): Promise<ContactLinkData[]> {
+  cacheLife("content");
   cacheTag("content");
   const rows = await rest<Row>("contact_links");
   if (!rows) return [];

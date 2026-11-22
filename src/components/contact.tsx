@@ -96,13 +96,11 @@ export default function Contact({
               rel={l.external ? "noreferrer" : undefined}
             >
               <span className="fill" aria-hidden="true" />
-              <span>
-                <span className="nf" aria-hidden="true">
-                  {l.icon}
-                </span>{" "}
-                {l.label}
+              <span className="nf contact-link-icon" aria-hidden="true">
+                {l.icon}
               </span>
-              <span className="small">{l.note}</span>
+              <span className="contact-link-label">{l.label}</span>
+              <span className="contact-link-note">{l.note}</span>
             </a>
           ))}
           {resolved.length === 0 && (

@@ -13,7 +13,6 @@ export default function Nav() {
 
   // ---- theme (dark default, persisted, no-flash via inline script in layout) ----
   const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const switchRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setTheme(document.documentElement.dataset.theme === "light" ? "light" : "dark");
@@ -34,10 +33,17 @@ export default function Nav() {
   const toggleTheme = (btn: HTMLElement) => {
     const next = theme === "dark" ? "light" : "dark";
 
-    // lamp-switch click: the plate presses in, the rocker is css-transitioned
-    gsap.fromTo(btn, { scale: 0.86 }, { scale: 1, duration: 0.45, ease: "power2.out" });
+    // animate icon
+    const ico = btn.querySelector(".nav-theme-icon");
+    if (ico) {
+      gsap.fromTo(
+        ico,
+        { rotate: -180, scale: 0.6 },
+        { rotate: 0, scale: 1, duration: 0.35, ease: "back.out(2)" },
+      );
+    }
 
-    // the circle grows from the switch itself
+    // the circle grows from the button itself
     const r = btn.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
@@ -99,7 +105,7 @@ export default function Nav() {
       { yPercent: 0, duration: 0.55, stagger: 0.06, delay: 0.28, ease: "power3.out" },
     );
     gsap.fromTo(
-      ".m-menu-head, .m-foot",
+      ".m-menu-head, .m-foot, .m-cta-btn",
       { autoAlpha: 0 },
       { autoAlpha: 1, duration: 0.3, delay: 0.4 },
     );
@@ -131,7 +137,6 @@ export default function Nav() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -160,22 +165,17 @@ export default function Nav() {
             ))}
           </div>
 
-          <div className="nav-switch">
-            <button
-              ref={switchRef}
-              className="theme-switch"
-              type="button"
-              aria-label="toggle dark / light theme"
-              aria-pressed={theme === "light"}
-              onClick={(e) => toggleTheme(e.currentTarget)}
-            >
-              <span className="screw t" aria-hidden="true" />
-              <span className="screw b" aria-hidden="true" />
-              <span className="rocker">
-                <span className="nf" aria-hidden="true">&#xf0e7;</span>
-              </span>
-            </button>
-          </div>
+          <button
+            className="nav-theme"
+            type="button"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            onClick={(e) => toggleTheme(e.currentTarget)}
+          >
+            <span className="nf nav-theme-icon" aria-hidden="true">
+              {theme === "dark" ? "\uf186" : "\uf185"}
+            </span>
+          </button>
 
           <a
             className="nav-cta"
@@ -218,18 +218,25 @@ export default function Nav() {
                 closeMenu(l.href);
               }}
             >
+              <span className="fill" aria-hidden="true" />
               <span className="m-link-inner">
                 <span className="idx">0{i + 1}</span>
                 <span>{l.label}</span>
               </span>
             </a>
           ))}
+          <a
+            className="btn btn-paper m-cta-btn"
+            href={`mailto:${EMAIL}?subject=${encodeURIComponent("need you!")}`}
+            onClick={() => closeMenu()}
+          >
+            <span className="nf" aria-hidden="true">&#xf061;</span>
+            <span>need me?</span>
+          </a>
         </div>
         <div className="m-foot">
           <span>banjarmasin, id</span>
-          <a href={`mailto:${EMAIL}?subject=${encodeURIComponent("need you!")}`}>
-            need me? <span className="nf" aria-hidden="true">&#xf061;</span>
-          </a>
+          <span>&copy; 2026 bram.dev</span>
         </div>
       </div>
     </>

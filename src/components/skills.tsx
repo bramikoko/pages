@@ -188,7 +188,7 @@ export default function Skills({
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [needsScroll, softSkills.length]);
   // ------- skill modal (draggable, like the blog reader) -------
   const openSkill = useCallback((s: Skill, soft: boolean) => {
     const win = winRef.current;

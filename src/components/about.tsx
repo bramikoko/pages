@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { EMAIL, type Project, type Experience } from "@/src/lib/data";
+import { EMAIL, type Experience } from "@/src/lib/data";
 import type { WorkData, ExperienceData } from "@/src/app/page";
 type WorkItem = WorkData;
 
