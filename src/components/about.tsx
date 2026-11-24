@@ -6,7 +6,7 @@ import { EMAIL, type Experience } from "@/src/lib/data";
 import type { WorkData, ExperienceData } from "@/src/app/page";
 type WorkItem = WorkData;
 
-type DrawerKind = "works" | "about" | null;
+type DrawerKind = "works" | "about";
 
 export default function About({
   works,
@@ -15,7 +15,11 @@ export default function About({
   works: WorkData[];
   experience: ExperienceData[];
 }) {
-  const [drawer, setDrawer] = useState<DrawerKind>(null);
+  const [worksOpen, setWorksOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const worksOpenRef = useRef(false);
+  const aboutOpenRef = useRef(false);
+
   const [project, setProject] = useState<WorkItem | null>(null);
   const [exp, setExp] = useState<Experience | null>(null);
   const worksRef = useRef<HTMLDivElement>(null);
@@ -54,12 +58,25 @@ export default function About({
   }, []);
 
   const openDrawer = useCallback(
-    (kind: Exclude<DrawerKind, null>) => {
-      setDrawer(kind);
-      const el = kind === "works" ? worksRef.current : aboutRef.current;
+    (kind: DrawerKind) => {
+      const isWorks = kind === "works";
+      const el = isWorks ? worksRef.current : aboutRef.current;
+      const otherEl = isWorks ? aboutRef.current : worksRef.current;
       if (!el) return;
+
+      if (isWorks) {
+        setWorksOpen(true);
+        worksOpenRef.current = true;
+      } else {
+        setAboutOpen(true);
+        aboutOpenRef.current = true;
+      }
+
+      el.style.zIndex = "71";
+      if (otherEl) otherEl.style.zIndex = "70";
+
       window.__loco?.stop();
-      const dir = kind === "works" ? -1 : 1; // works slides from the left
+      const dir = isWorks ? -1 : 1; // works slides from the left
       gsap.set(el, { visibility: "visible" });
       gsap.fromTo(
         el,
@@ -72,19 +89,34 @@ export default function About({
     [burst],
   );
 
-  const closeDrawer = useCallback(() => {
-    const el = drawer === "works" ? worksRef.current : aboutRef.current;
-    if (!el) return;
-    const dir = drawer === "works" ? -1 : 1;
-    gsap.to(el, {
-      xPercent: dir * 103,
-      duration: 0.55,
-      ease: "power3.inOut",
-      onComplete: () => gsap.set(el, { visibility: "hidden" }),
-    });
-    window.__loco?.start();
-    setDrawer(null);
-  }, [drawer]);
+  const closeDrawer = useCallback(
+    (kind: DrawerKind) => {
+      const isWorks = kind === "works";
+      const el = isWorks ? worksRef.current : aboutRef.current;
+      if (!el) return;
+
+      if (isWorks) {
+        setWorksOpen(false);
+        worksOpenRef.current = false;
+      } else {
+        setAboutOpen(false);
+        aboutOpenRef.current = false;
+      }
+
+      const dir = isWorks ? -1 : 1;
+      gsap.to(el, {
+        xPercent: dir * 103,
+        duration: 0.55,
+        ease: "power3.inOut",
+        onComplete: () => gsap.set(el, { visibility: "hidden" }),
+      });
+
+      if (!worksOpenRef.current && !aboutOpenRef.current && !project && !exp) {
+        window.__loco?.start();
+      }
+    },
+    [project, exp],
+  );
 
   const openProject = useCallback((p: WorkItem) => {
     setProject(p);
@@ -108,9 +140,9 @@ export default function About({
       ease: "power3.inOut",
       onComplete: () => gsap.set(el, { visibility: "hidden" }),
     });
-    if (!drawer) window.__loco?.start();
+    if (!worksOpenRef.current && !aboutOpenRef.current) window.__loco?.start();
     setProject(null);
-  }, [drawer]);
+  }, []);
 
   const openExp = useCallback((x: Experience) => {
     setExp(x);
@@ -135,21 +167,30 @@ export default function About({
       ease: "power3.inOut",
       onComplete: () => gsap.set(el, { visibility: "hidden" }),
     });
-    if (!drawer) window.__loco?.start();
+    if (!worksOpenRef.current && !aboutOpenRef.current) window.__loco?.start();
     setExp(null);
-  }, [drawer]);
+  }, []);
 
   // esc closes the topmost layer
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (project) closeProject();
-      else if (exp) closeExp();
-      else if (drawer) closeDrawer();
+      if (project) {
+        closeProject();
+      } else if (exp) {
+        closeExp();
+      } else if (worksOpenRef.current && aboutOpenRef.current) {
+        closeDrawer("works");
+        closeDrawer("about");
+      } else if (worksOpenRef.current) {
+        closeDrawer("works");
+      } else if (aboutOpenRef.current) {
+        closeDrawer("about");
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [project, exp, drawer, closeProject, closeExp, closeDrawer]);
+  }, [project, exp, closeProject, closeExp, closeDrawer]);
 
   return (
     <>
@@ -165,6 +206,7 @@ export default function About({
                 className="text-link"
                 id="open-works"
                 type="button"
+                aria-expanded={worksOpen}
                 onClick={() => openDrawer("works")}
               >
                 <span className="nf arrow" aria-hidden="true">&#xf060;</span>
@@ -187,6 +229,7 @@ export default function About({
                 className="text-link flip"
                 id="open-about"
                 type="button"
+                aria-expanded={aboutOpen}
                 onClick={() => openDrawer("about")}
               >
                 <span>more about me</span>
@@ -204,12 +247,17 @@ export default function About({
         role="dialog"
         aria-modal="true"
         aria-label="my works"
+        aria-hidden={!worksOpen}
+        onPointerDown={() => {
+          if (worksRef.current) worksRef.current.style.zIndex = "71";
+          if (aboutRef.current) aboutRef.current.style.zIndex = "70";
+        }}
       >
         <div className="drawer-head px-dots-dark">
           <span className="drawer-title">
             <span className="nf" aria-hidden="true">&#xf0c9;</span> my works
           </span>
-          <button className="drawer-close" type="button" onClick={closeDrawer}>
+          <button className="drawer-close" type="button" onClick={() => closeDrawer("works")}>
             <span className="nf" aria-hidden="true">&#xf00d;</span> close
           </button>
         </div>
@@ -262,12 +310,17 @@ export default function About({
         role="dialog"
         aria-modal="true"
         aria-label="more about me"
+        aria-hidden={!aboutOpen}
+        onPointerDown={() => {
+          if (aboutRef.current) aboutRef.current.style.zIndex = "71";
+          if (worksRef.current) worksRef.current.style.zIndex = "70";
+        }}
       >
         <div className="drawer-head px-dots-dark">
           <span className="drawer-title">
             <span className="nf" aria-hidden="true">&#xf19d;</span> more about me
           </span>
-          <button className="drawer-close" type="button" onClick={closeDrawer}>
+          <button className="drawer-close" type="button" onClick={() => closeDrawer("about")}>
             <span className="nf" aria-hidden="true">&#xf00d;</span> close
           </button>
         </div>

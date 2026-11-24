@@ -846,12 +846,13 @@
 }
 
 .drawer-end {
-  border-top: 1px solid var(--ink);
+  border-top: 1px solid var(--paper-ink);
   padding: 2rem 1.4rem 2.4rem;
   margin-top: 0.5rem;
 }
 
 .drawer-end .big-ask {
+  color: var(--paper-ink);
   font-family: var(--display);
   font-size: clamp(1.6rem, 4vw, 2.6rem);
   font-weight: 800;
@@ -862,7 +863,8 @@
 
 .drawer-end .small {
   font-size: 0.7rem;
-  color: var(--ink-dim);
+  color: var(--paper-ink);
+  opacity: 0.65;
   margin-top: 0.7rem;
   letter-spacing: 0.05em;
 }
@@ -1013,6 +1015,44 @@
   font-size: 0.72rem;
   color: var(--ink-faint);
   margin: 0;
+}
+
+/* inside drawers, surfaces use var(--paper) and ink is var(--paper-ink) */
+.drawer .drawer-empty {
+  border-color: var(--paper-ink);
+  color: var(--paper-ink);
+}
+
+.drawer .empty-title {
+  color: var(--paper-ink);
+}
+
+.drawer .drawer-empty .small {
+  color: var(--paper-ink);
+  opacity: 0.65;
+}
+
+[data-theme="light"] .wcard {
+  background: #1e1e1e;
+  box-shadow: 4px 4px 0 0 #0a0a0a;
+}
+
+[data-theme="light"] .wcard-title {
+  color: #fff;
+}
+
+[data-theme="light"] .wcard-year,
+[data-theme="light"] .wcard-period {
+  color: #999;
+}
+
+[data-theme="light"] .wcard-desc {
+  color: #ccc;
+}
+
+[data-theme="light"] .wcard-tag {
+  color: #eee;
+  border-color: #555;
 }
 
 /* no row overflows — no pin, no travel meter; native scroll fallback
