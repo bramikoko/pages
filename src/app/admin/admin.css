@@ -122,6 +122,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
 }
 
@@ -178,11 +180,29 @@ li.open > .adm-row {
 .adm-row-label {
   font-size: 0.9rem;
   font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .adm-row-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
   font-size: 0.7rem;
   color: var(--ink-faint);
+}
+
+li.open > .adm-row .adm-row-meta {
+  color: var(--bg);
+  opacity: 0.75;
+}
+
+.adm-row-toggle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  width: 1ch;
+  text-align: center;
 }
 
 .adm-flag {
@@ -212,7 +232,7 @@ li.open > .adm-row {
 
 .adm-editor.new {
   border-top: 1px solid var(--ink);
-  margin-top: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .adm-new-head {
@@ -248,6 +268,11 @@ li.open > .adm-row {
   width: 100%;
 }
 
+.adm-input::placeholder {
+  color: var(--ink-faint);
+  opacity: 1;
+}
+
 .adm-input:focus {
   outline: none;
   border-color: var(--ink);
@@ -274,6 +299,79 @@ textarea.adm-input {
 
 .adm-actions {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
   padding-top: 0.4rem;
+}
+
+.adm-actions .adm-btn.danger {
+  margin-left: auto;
+}
+
+/* ============ mobile ux ============ */
+@media (max-width: 640px) {
+  .admin {
+    padding: 1.1rem 0.9rem 5rem;
+  }
+
+  .adm-top {
+    margin-bottom: 1rem;
+  }
+
+  .adm-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.7rem;
+  }
+
+  .adm-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .adm-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    min-height: 40px;
+    padding: 0.5rem 0.85rem;
+  }
+
+  .adm-btn {
+    min-height: 40px;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .adm-row {
+    min-height: 48px;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .adm-editor {
+    padding: 1rem 0.85rem;
+    gap: 1rem;
+  }
+
+  /* 16px prevents ios safari auto-zoom on input focus */
+  .adm-input {
+    font-size: 16px;
+    min-height: 44px;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .adm-actions {
+    flex-wrap: wrap;
+  }
+
+  .adm-actions .adm-btn {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .adm-actions .adm-btn.danger {
+    margin-left: 0;
+    flex-basis: 100%;
+    margin-top: 0.25rem;
+  }
 }

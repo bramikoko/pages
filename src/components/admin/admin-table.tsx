@@ -29,10 +29,13 @@ export default function AdminTable({
   const [msg, setMsg] = useState("");
 
   const load = useCallback(async () => {
-    const { data, error } = await supabase
-      .from(cfg.table)
-      .select("*")
-      .order(cfg.orderKey, { ascending: true });
+    let query = supabase.from(cfg.table).select("*");
+    if (cfg.filter) {
+      for (const [k, v] of Object.entries(cfg.filter)) {
+        query = query.eq(k, v);
+      }
+    }
+    const { data, error } = await query.order(cfg.orderKey, { ascending: true });
     if (error) {
       setMsg(`// load failed: ${error.message}`);
       return;
@@ -134,12 +137,55 @@ export default function AdminTable({
       <input
         className="adm-input"
         type={f.type === "num" ? "number" : "text"}
+        inputMode={f.type === "num" ? "numeric" : undefined}
         value={String(v ?? "")}
         placeholder={f.placeholder}
-        onChange={(e) => set(f.type === "num" ? Number(e.target.value) : e.target.value)}
+        onChange={(e) => {
+          if (f.type !== "num") return set(e.target.value);
+          const raw = e.target.value;
+          set(raw === "" && cfg.defaults[f.key] === null ? null : Number(raw));
+        }}
       />
     );
   };
+
+  const renderEditor = (rowId?: unknown) => (
+    <div className={`adm-editor${isNew ? " new" : ""}`}>
+      {isNew && <p className="adm-new-head">new {cfg.title} row</p>}
+      {cfg.fields.map((f) => (
+        <div className={`adm-field adm-${f.type}`} key={f.key}>
+          {f.type !== "check" && <label>{f.label}</label>}
+          {field(f)}
+          {f.hint && <small>{f.hint}</small>}
+        </div>
+      ))}
+      <div className="adm-actions">
+        <button className="adm-btn solid" type="button" disabled={busy} onClick={save}>
+          {busy ? "saving..." : isNew ? "create" : "save"}
+        </button>
+        <button
+          className="adm-btn"
+          type="button"
+          onClick={() => {
+            setEditing(null);
+            setIsNew(false);
+          }}
+        >
+          cancel
+        </button>
+        {!isNew && rowId !== undefined && (
+          <button
+            className="adm-btn danger"
+            type="button"
+            disabled={busy}
+            onClick={() => remove(rowId)}
+          >
+            delete
+          </button>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="adm-table">
@@ -147,95 +193,57 @@ export default function AdminTable({
         <h2 className="adm-title">
           {cfg.title} <span className="adm-count">[{rows.length}]</span>
         </h2>
-        <button className="adm-btn" type="button" onClick={openNew}>
-          + add new
+        <button
+          className="adm-btn"
+          type="button"
+          onClick={() => {
+            if (isNew) {
+              setEditing(null);
+              setIsNew(false);
+            } else {
+              openNew();
+            }
+          }}
+        >
+          {isNew ? "− close" : "+ add new"}
         </button>
       </div>
 
       {msg && <p className="adm-msg">{msg}</p>}
 
-      <ul className="adm-list">
-        {rows.map((r) => (
-          <li key={String(r.id)} className={editing && r.id === editing.id ? "open" : ""}>
-            <button
-              className="adm-row"
-              type="button"
-              onClick={() => {
-                setEditing(editing && r.id === editing.id ? null : { ...r });
-                setIsNew(false);
-              }}
-            >
-              <span className="adm-row-label">{String(r[cfg.labelKey] ?? "—")}</span>
-              <span className="adm-row-meta">
-                {cfg.orderKey === "created_at" && r.approved === false ? (
-                  <b className="adm-flag">pending</b>
-                ) : (
-                  `#${String(r[cfg.orderKey] ?? "")}`
-                )}
-              </span>
-            </button>
+      {isNew && editing && renderEditor()}
 
-            {editing && r.id === editing.id && (
-              <div className="adm-editor">
-                {cfg.fields.map((f) => (
-                  <div className={`adm-field adm-${f.type}`} key={f.key}>
-                    {f.type !== "check" && <label>{f.label}</label>}
-                    {field(f)}
-                    {f.hint && <small>{f.hint}</small>}
-                  </div>
-                ))}
-                <div className="adm-actions">
-                  <button className="adm-btn solid" type="button" disabled={busy} onClick={save}>
-                    {busy ? "saving..." : "save"}
-                  </button>
-                  <button className="adm-btn" type="button" onClick={() => setEditing(null)}>
-                    cancel
-                  </button>
-                  {!isNew && (
-                    <button
-                      className="adm-btn danger"
-                      type="button"
-                      disabled={busy}
-                      onClick={() => remove(r.id)}
-                    >
-                      delete
-                    </button>
+      <ul className="adm-list">
+        {rows.map((r) => {
+          const isOpen = !isNew && editing && r.id === editing.id;
+          return (
+            <li key={String(r.id)} className={isOpen ? "open" : ""}>
+              <button
+                className="adm-row"
+                type="button"
+                aria-expanded={Boolean(isOpen)}
+                onClick={() => {
+                  setEditing(isOpen ? null : { ...r });
+                  setIsNew(false);
+                }}
+              >
+                <span className="adm-row-label">{String(r[cfg.labelKey] ?? "—")}</span>
+                <span className="adm-row-meta">
+                  {cfg.orderKey === "created_at" && r.approved === false ? (
+                    <b className="adm-flag">pending</b>
+                  ) : (
+                    `#${String(r[cfg.orderKey] ?? "")}`
                   )}
-                </div>
-              </div>
-            )}
-          </li>
-        ))}
+                  <span className="adm-row-toggle">{isOpen ? "−" : "+"}</span>
+                </span>
+              </button>
+
+              {isOpen && renderEditor(r.id)}
+            </li>
+          );
+        })}
         {rows.length === 0 && <li className="adm-empty">nothing here yet — add the first one.</li>}
       </ul>
-
-      {isNew && editing && (
-        <div className="adm-editor new">
-          <p className="adm-new-head">new {cfg.title} row</p>
-          {cfg.fields.map((f) => (
-            <div className={`adm-field adm-${f.type}`} key={f.key}>
-              {f.type !== "check" && <label>{f.label}</label>}
-              {field(f)}
-              {f.hint && <small>{f.hint}</small>}
-            </div>
-          ))}
-          <div className="adm-actions">
-            <button className="adm-btn solid" type="button" disabled={busy} onClick={save}>
-              {busy ? "saving..." : "create"}
-            </button>
-            <button
-              className="adm-btn"
-              type="button"
-              onClick={() => {
-                setEditing(null);
-                setIsNew(false);
-              }}
-            >
-              cancel
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

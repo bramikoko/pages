@@ -18,9 +18,18 @@ export type SectionCfg = {
   title: string;
   labelKey: string; // which field names a row in the list
   orderKey: string;
+  filter?: Record<string, unknown>;
   fields: FieldDef[];
   defaults: Record<string, unknown>;
 };
+
+const SKILL_FIELDS: FieldDef[] = [
+  { key: "name", label: "name", type: "text" },
+  { key: "pct", label: "percent", type: "num", hint: "0 — 100" },
+  { key: "icon", label: "icon", type: "text", hint: "simple-icons slug from simpleicons.org — e.g. react, nextdotjs, typescript" },
+  { key: "description", label: "desc", type: "area" },
+  { key: "sort", label: "order", type: "num" },
+];
 
 export const SECTIONS: SectionCfg[] = [
   {
@@ -30,12 +39,12 @@ export const SECTIONS: SectionCfg[] = [
     labelKey: "title",
     orderKey: "sort",
     fields: [
-      { key: "title", label: "title", type: "text", placeholder: "pages" },
-      { key: "year", label: "year", type: "text", placeholder: "2025" },
+      { key: "title", label: "title", type: "text" },
+      { key: "year", label: "year", type: "text" },
       { key: "stack", label: "stack", type: "tags", hint: "comma separated — next.js, tailwind" },
-      { key: "description", label: "short desc", type: "area", placeholder: "one line shown on the card" },
-      { key: "detail", label: "detail", type: "area", placeholder: "longer text shown in the project popup" },
-      { key: "image", label: "image url", type: "text", placeholder: "/img/xxx.png or https://..." },
+      { key: "description", label: "short desc", type: "area" },
+      { key: "detail", label: "detail", type: "area" },
+      { key: "image", label: "image url", type: "text", placeholder: "/img/... or https://..." },
       { key: "link", label: "link url", type: "text", placeholder: "https://..." },
       { key: "sort", label: "order", type: "num" },
     ],
@@ -49,30 +58,34 @@ export const SECTIONS: SectionCfg[] = [
     orderKey: "sort",
     fields: [
       { key: "period", label: "period", type: "text", placeholder: "2024 — now" },
-      { key: "title", label: "role / title", type: "text", placeholder: "fullstack dev" },
-      { key: "place", label: "place", type: "text", placeholder: "reddev" },
+      { key: "title", label: "role / title", type: "text" },
+      { key: "place", label: "place", type: "text" },
       { key: "description", label: "short desc", type: "area" },
-      { key: "detail", label: "detail", type: "area", placeholder: "shown in the popup" },
-      { key: "image", label: "image url", type: "text" },
+      { key: "detail", label: "detail", type: "area" },
+      { key: "image", label: "image url", type: "text", placeholder: "/img/... or https://..." },
       { key: "sort", label: "order", type: "num" },
     ],
     defaults: { period: "", title: "", place: "", description: "", detail: "", sort: 0 },
   },
   {
-    key: "skills",
+    key: "hard_skills",
     table: "skills",
-    title: "skills",
+    title: "hard skills",
     labelKey: "name",
     orderKey: "sort",
-    fields: [
-      { key: "name", label: "name", type: "text", placeholder: "typescript" },
-      { key: "pct", label: "percent", type: "num", hint: "0 — 100" },
-      { key: "icon", label: "icon", type: "text", hint: "simple-icons slug from simpleicons.org — e.g. react, nextdotjs, typescript" },
-      { key: "description", label: "desc", type: "area" },
-      { key: "kind", label: "kind", type: "select", options: ["hard", "soft"] },
-      { key: "sort", label: "order", type: "num" },
-    ],
+    filter: { kind: "hard" },
+    fields: SKILL_FIELDS,
     defaults: { name: "", pct: 50, icon: "", description: "", kind: "hard", sort: 0 },
+  },
+  {
+    key: "soft_skills",
+    table: "skills",
+    title: "soft skills",
+    labelKey: "name",
+    orderKey: "sort",
+    filter: { kind: "soft" },
+    fields: SKILL_FIELDS,
+    defaults: { name: "", pct: 50, icon: "", description: "", kind: "soft", sort: 0 },
   },
   {
     key: "posts",
@@ -81,7 +94,7 @@ export const SECTIONS: SectionCfg[] = [
     labelKey: "title",
     orderKey: "sort",
     fields: [
-      { key: "date", label: "date", type: "text", placeholder: "2025-01-31" },
+      { key: "date", label: "date", type: "text", placeholder: "yyyy-mm-dd" },
       { key: "title", label: "title", type: "text" },
       { key: "excerpt", label: "excerpt", type: "area", hint: "shown on the blog list" },
       { key: "body", label: "body", type: "area", hint: "blank line = new paragraph" },
@@ -118,8 +131,8 @@ export const SECTIONS: SectionCfg[] = [
         options: ["github", "email", "whatsapp", "instagram", "reddit", "linkedin", "x", "youtube", "tiktok", "discord"],
         hint: "picks the icon + note shown on the site",
       },
-      { key: "label", label: "label", type: "text", placeholder: "github" },
-      { key: "url", label: "url", type: "text", placeholder: "https://github.com/bramikoko" },
+      { key: "label", label: "label", type: "text" },
+      { key: "url", label: "url", type: "text", placeholder: "https://..." },
       { key: "sort", label: "order", type: "num" },
     ],
     defaults: { platform: "github", label: "", url: "", sort: 0 },
