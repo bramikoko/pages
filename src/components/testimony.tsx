@@ -160,11 +160,11 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
           </p>
           <div className="field">
             <label htmlFor="t-name">name</label>
-            <input id="t-name" name="name" required maxLength={60} placeholder="your name" />
+            <input id="t-name" name="name" required maxLength={60} />
           </div>
           <div className="field">
             <label htmlFor="t-role">role (optional)</label>
-            <input id="t-role" name="role" maxLength={60} placeholder="e.g. frontend dev" />
+            <input id="t-role" name="role" maxLength={60} />
           </div>
           <div className="field">
             <label htmlFor="t-msg">message</label>
@@ -173,7 +173,6 @@ export default function Testimony({ initial }: { initial: Testi[] }) {
               name="message"
               required
               maxLength={280}
-              placeholder="keep it short and honest"
             />
           </div>
           <div className="field">
