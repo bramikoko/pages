@@ -1,5 +1,5 @@
 import SmoothScroll from "@/src/components/smooth";
-import PixelBackground from "@/src/components/pixel-background";
+import AsciiBackground from "@/src/components/ascii-background";
 import Nav from "@/src/components/nav";
 import Hero from "@/src/components/hero";
 import About from "@/src/components/about";
@@ -34,7 +34,7 @@ export default async function Home() {
 
   return (
     <SmoothScroll>
-      <PixelBackground />
+      <AsciiBackground />
       <Nav />
       <div className="page-shell" id="page-shell">
         <main>
